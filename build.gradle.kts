@@ -5,9 +5,15 @@ plugins {
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
 
+    jacoco
+
     kotlin("jvm") version "1.6.21"
     kotlin("plugin.spring") version "1.6.21"
     kotlin("plugin.jpa") version "1.6.21"
+}
+
+jacoco {
+    toolVersion = "0.8.8"
 }
 
 group = "net.bellsoft"
@@ -81,6 +87,68 @@ tasks.withType<KotlinCompile> {
     }
 }
 
+tasks.withType<org.springframework.boot.gradle.tasks.run.BootRun> {
+    environment("SPRING_PROFILES_ACTIVE", "production")
+}
+
 tasks.withType<Test> {
     useJUnitPlatform()
+
+    environment("SPRING_PROFILES_ACTIVE", "test")
+
+    finalizedBy("jacocoTestReport")
+}
+
+val jacocoDefaultExcludeFiles = listOf(
+    "net.bellsoft.bellsafehouse.BellSafeHouseApplicationKt"
+)
+
+tasks.jacocoTestReport {
+    reports {
+        csv.required.set(true)
+        csv.outputLocation.set(file("$buildDir/jacoco/csv"))
+    }
+
+    finalizedBy("jacocoTestCoverageVerification") // 활성화시 violationRules 통과 실패할경우 테스트도 실패처리 됨
+}
+
+tasks.jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            // element 가 없으면 프로젝트의 전체 파일을 합친 값 기준
+
+            limit {
+                // counter 를 지정하지 않으면 default 는 INSTRUCTION
+                // value 를 지정하지 않으면 default 는 COVEREDRATIO
+                minimum = "0.30".toBigDecimal()
+            }
+        }
+
+        rule {
+            enabled = true
+            element = "CLASS" // class 단위로 rule check
+            excludes = jacocoDefaultExcludeFiles
+
+            // 브랜치 커버리지 최소 90% 만족
+            limit {
+                counter = "BRANCH"
+                value = "COVEREDRATIO"
+                minimum = "0.90".toBigDecimal()
+            }
+
+            // 라인 커버리지 최소 80% 만족
+            limit {
+                counter = "LINE"
+                value = "COVEREDRATIO"
+                minimum = "0.80".toBigDecimal()
+            }
+
+            // 빈 줄을 제외한 코드의 라인수를 최대 200라인으로 제한
+            limit {
+                counter = "LINE"
+                value = "TOTALCOUNT"
+                maximum = "200".toBigDecimal()
+            }
+        }
+    }
 }
