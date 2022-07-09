@@ -12,7 +12,7 @@
 4. Save Actions 플러그인에서 `File > Settings > Other Settions > Save Actions`
 5. IntelliJ 재시작
 
-### IntelliJ 설정 (`파일 (File)` -> `설정 (Settings)`)
+### IntelliJ 기본 설정 (`파일 (File)` -> `설정 (Settings)`)
 
 #### 에디터 설정 (`에디터 (Editor)` -> `일반 (General)`)
 
@@ -37,6 +37,12 @@
 - `Optimize imports` 활성화
 - `Refomat file` 활성화
 
-### 한글 테스트를 위한 IntelliJ VM 옵션 설정 (`도움말 (Help)` -> `사용자 지정 VM 옵션 편집... (Edit Custom VM Options...)`)
+### 한글 테스트 설정
+
+#### IntelliJ VM 옵션 설정 (`도움말 (Help)` -> `사용자 지정 VM 옵션 편집... (Edit Custom VM Options...)`)
 
 - 하단에 `-Dfile.encoding=UTF-8` 추가
+
+#### 한글 함수명 작성 시 비 ASCII 문자 경고 제거 (`파일 (File)` -> `설정 (Settings)` -> `검사 (Inspections)`)
+
+- `국제화 (Internationalization)` -> `비 ASCII 문자 (Non-ASCII characters)` -> `테스트` 를 `강조 없이 수정만` 으로 변경 또는 비활성화
