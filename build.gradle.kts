@@ -36,7 +36,7 @@ dependencies {
 
     // DB
     implementation("org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion")
-    implementation("org.liquibase:liquibase-core:$liquibaseVersion")
+//    implementation("org.liquibase:liquibase-core:$liquibaseVersion")
     runtimeOnly("mysql:mysql-connector-java:$mysqlConnectorVersion")
     runtimeOnly("com.h2database:h2:$h2DatabaseVersion")
 
@@ -45,8 +45,8 @@ dependencies {
     testImplementation("org.springframework.amqp:spring-rabbit-test:$springBootVersion")
 
     // Security
-    implementation("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
-    testImplementation("org.springframework.security:spring-security-test:$springSecurityVersion")
+//    implementation("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
+//    testImplementation("org.springframework.security:spring-security-test:$springSecurityVersion")
 
     // Communication
     implementation("org.springframework.boot:spring-boot-starter-mail:$springBootVersion")
