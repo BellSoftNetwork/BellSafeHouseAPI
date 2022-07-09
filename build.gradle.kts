@@ -1,7 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("org.springframework.boot") version "3.0.0-M3"
+    id("org.springframework.boot") version "2.7.1"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
 
     kotlin("jvm") version "1.6.21"
@@ -15,16 +15,15 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 
 repositories {
     mavenCentral()
-    maven { url = uri("https://repo.spring.io/milestone") }
 }
 
 val kotlinReflectVersion = "1.7.10"
-val springBootVersion = "3.0.0-M3"
-val springSecurityVersion = "6.0.0-M5"
-val springBatchVersion = "5.0.0-M3"
-val liquibaseVersion = "4.12.0"
+val springBootVersion = "2.7.1"
+val springSecurityVersion = "5.7.2"
+val springBatchVersion = "4.3.6"
+val liquibaseVersion = "4.9.1"
 val mysqlConnectorVersion = "8.0.29"
-val h2DatabaseVersion = "2.1.212"
+val h2DatabaseVersion = "2.1.214"
 val springdocOpenapiVersion = "1.6.9"
 
 dependencies {
