@@ -22,6 +22,7 @@ val kotlinReflectVersion = "1.7.10"
 val springBootVersion = "2.7.1"
 val springSecurityVersion = "5.7.2"
 val springBatchVersion = "4.3.6"
+val springRabbitVersion = "2.4.6"
 val liquibaseVersion = "4.9.1"
 val mysqlConnectorVersion = "8.0.29"
 val h2DatabaseVersion = "2.1.214"
@@ -43,7 +44,7 @@ dependencies {
 
     // Broker
     implementation("org.springframework.boot:spring-boot-starter-amqp:$springBootVersion")
-    testImplementation("org.springframework.amqp:spring-rabbit-test:$springBootVersion")
+    testImplementation("org.springframework.amqp:spring-rabbit-test:$springRabbitVersion")
 
     // Security
 //    implementation("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
