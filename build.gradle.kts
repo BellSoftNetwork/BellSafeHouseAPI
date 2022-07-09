@@ -25,6 +25,7 @@ val springBatchVersion = "5.0.0-M3"
 val liquibaseVersion = "4.12.0"
 val mysqlConnectorVersion = "8.0.29"
 val h2DatabaseVersion = "2.1.212"
+val springdocOpenapiVersion = "1.6.9"
 
 dependencies {
     // Language
@@ -54,6 +55,11 @@ dependencies {
     // Process
     implementation("org.springframework.boot:spring-boot-starter-batch:$springBootVersion")
     testImplementation("org.springframework.batch:spring-batch-test:$springBatchVersion")
+
+    // Swagger
+    implementation("org.springdoc:springdoc-openapi-data-rest:$springdocOpenapiVersion")
+    implementation("org.springdoc:springdoc-openapi-ui:$springdocOpenapiVersion")
+    implementation("org.springdoc:springdoc-openapi-kotlin:$springdocOpenapiVersion")
 
     // Support
     implementation("org.springframework.boot:spring-boot-starter-validation:$springBootVersion")
