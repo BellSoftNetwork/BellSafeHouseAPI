@@ -18,45 +18,53 @@ repositories {
     maven { url = uri("https://repo.spring.io/milestone") }
 }
 
+val kotlinReflectVersion = "1.7.10"
+val springBootVersion = "3.0.0-M3"
+val springSecurityVersion = "6.0.0-M5"
+val springBatchVersion = "5.0.0-M3"
+val liquibaseVersion = "4.12.0"
+val mysqlConnectorVersion = "8.0.29"
+val h2DatabaseVersion = "2.1.212"
+
 dependencies {
     // Language
-    implementation("org.jetbrains.kotlin:kotlin-reflect")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinReflectVersion")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinReflectVersion")
 
     // Server
-    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
 
     // DB
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa")
-    implementation("org.liquibase:liquibase-core")
-    runtimeOnly("mysql:mysql-connector-java")
-    runtimeOnly("com.h2database:h2")
+    implementation("org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion")
+    implementation("org.liquibase:liquibase-core:$liquibaseVersion")
+    runtimeOnly("mysql:mysql-connector-java:$mysqlConnectorVersion")
+    runtimeOnly("com.h2database:h2:$h2DatabaseVersion")
 
     // Broker
-    implementation("org.springframework.boot:spring-boot-starter-amqp")
-    testImplementation("org.springframework.amqp:spring-rabbit-test")
+    implementation("org.springframework.boot:spring-boot-starter-amqp:$springBootVersion")
+    testImplementation("org.springframework.amqp:spring-rabbit-test:$springBootVersion")
 
     // Security
-    implementation("org.springframework.boot:spring-boot-starter-security")
-    testImplementation("org.springframework.security:spring-security-test")
+    implementation("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
+    testImplementation("org.springframework.security:spring-security-test:$springSecurityVersion")
 
     // Communication
-    implementation("org.springframework.boot:spring-boot-starter-mail")
+    implementation("org.springframework.boot:spring-boot-starter-mail:$springBootVersion")
 
     // Process
-    implementation("org.springframework.boot:spring-boot-starter-batch")
-    testImplementation("org.springframework.batch:spring-batch-test")
+    implementation("org.springframework.boot:spring-boot-starter-batch:$springBootVersion")
+    testImplementation("org.springframework.batch:spring-batch-test:$springBatchVersion")
 
     // Support
-    implementation("org.springframework.boot:spring-boot-starter-validation")
-    implementation("org.springframework.boot:spring-boot-starter-hateoas")
+    implementation("org.springframework.boot:spring-boot-starter-validation:$springBootVersion")
+    implementation("org.springframework.boot:spring-boot-starter-hateoas:$springBootVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
     // Dev
-    developmentOnly("org.springframework.boot:spring-boot-devtools")
+    developmentOnly("org.springframework.boot:spring-boot-devtools:$springBootVersion")
 
     // Test
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
 }
 
 tasks.withType<KotlinCompile> {
