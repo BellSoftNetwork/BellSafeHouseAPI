@@ -33,6 +33,10 @@ val liquibaseVersion = "4.9.1"
 val mysqlConnectorVersion = "8.0.29"
 val h2DatabaseVersion = "2.1.214"
 val springdocOpenapiVersion = "1.6.9"
+val kotestVersion = "5.3.1"
+val kotestSpringExtensionVersion = "4.4.3"
+val mockkVersion = "1.12.4"
+val springMockkVersion = "3.1.1"
 
 dependencies {
     // Language
@@ -78,6 +82,11 @@ dependencies {
 
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
+    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
+    testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
+    testImplementation("io.kotest:kotest-extensions-spring:$kotestSpringExtensionVersion")
+    testImplementation("io.mockk:mockk:$mockkVersion")
+    testImplementation("com.ninja-squad:springmockk:$springMockkVersion")
 }
 
 tasks.withType<KotlinCompile> {
