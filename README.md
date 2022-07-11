@@ -4,13 +4,19 @@
 
 ## 프로젝트 환경설정
 
-### 필수 항목 설치
+### 필수 설정 구성
 
 1. IDEA 에 프로젝트 코드 컨벤션 등록: `./gradlew ktlintApplyToIdea`
 2. 코드 컨벤션 자동 수정 깃훅 등록: `./gradlew addKtlintCheckGitPreCommitHook`
-3. IntelliJ 플러그인 `Save Actions` 설치
-4. Save Actions 플러그인에서 `File > Settings > Other Settions > Save Actions`
-5. IntelliJ 재시작
+3. IntelliJ 재시작
+
+### IntelliJ 필수 플러그인 설치
+
+- `Save Actions`
+- `Kotest`
+- `JPA Buddy`
+
+이외 추가 플러그인은 팀 내 Mattermost 추천 리스트 확인
 
 ### IntelliJ 기본 설정 (`파일 (File)` -> `설정 (Settings)`)
 
@@ -37,7 +43,15 @@
 - `Optimize imports` 활성화
 - `Refomat file` 활성화
 
-### 한글 테스트 설정
+### IntelliJ 추가 설정
+
+#### IDE 메모리 설정 (`도움말 (Help)` -> `메모리 설정 변경 (Change Memory Settings)`)
+
+또는 Jetbrains Toolbox 내 IntelliJ 설정에서도 변경 가능
+
+- 개인 IDE 사용 패턴 및 PC 사양에 따라 적절히 설정
+
+#### 한글 테스트 설정
 
 #### IntelliJ VM 옵션 설정 (`도움말 (Help)` -> `사용자 지정 VM 옵션 편집... (Edit Custom VM Options...)`)
 
