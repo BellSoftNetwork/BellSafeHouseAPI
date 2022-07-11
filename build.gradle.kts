@@ -77,6 +77,9 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-hateoas:$springBootVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 
+    // Ops
+    implementation("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")
+
     // Dev
     developmentOnly("org.springframework.boot:spring-boot-devtools:$springBootVersion")
 
