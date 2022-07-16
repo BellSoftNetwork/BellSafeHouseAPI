@@ -92,18 +92,45 @@ dependencies {
     testImplementation("com.ninja-squad:springmockk:$springMockkVersion")
 }
 
-tasks.withType<KotlinCompile> {
+tasks.named<KotlinCompile>("compileKotlin") {
     kotlinOptions {
         freeCompilerArgs = listOf("-Xjsr305=strict")
         jvmTarget = "17"
     }
 }
 
-tasks.withType<org.springframework.boot.gradle.tasks.run.BootRun> {
+tasks.named<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
     environment("SPRING_PROFILES_ACTIVE", "production")
 }
 
-tasks.withType<Test> {
+tasks.named<org.springframework.boot.gradle.tasks.bundling.BootBuildImage>("bootBuildImage") {
+    environment("SPRING_PROFILES_ACTIVE", "production")
+
+    val imageBaseName: String by project
+    val imageTag: String by project
+    val registryUrl: String by project
+    val registryUser: String by project
+    val registryPassword: String by project
+    val registryEmail: String by project
+
+    if (project.hasProperty("imageBaseName")) {
+        imageName = imageBaseName
+
+        if (project.hasProperty("imageTag"))
+            tags = mutableListOf("$imageBaseName:$imageTag")
+    }
+
+    docker {
+        publishRegistry {
+            if (project.hasProperty("registryUrl")) url = registryUrl
+            if (project.hasProperty("registryUser")) username = registryUser
+            if (project.hasProperty("registryPassword")) password = registryPassword
+            if (project.hasProperty("registryEmail")) email = registryEmail
+        }
+    }
+}
+
+tasks.named<Test>("test") {
     useJUnitPlatform()
 
     environment("SPRING_PROFILES_ACTIVE", "test")
