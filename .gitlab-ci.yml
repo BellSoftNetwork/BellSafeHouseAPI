@@ -25,4 +25,6 @@ unit-test:
 
 image-build:
   stage: build
+  services:
+    - docker:dind
   script: "gradle bootBuildImage --publishImage -PregistryUrl=$CI_REGISTRY_URL -PimageBaseName=$CI_REGISTRY_IMAGE -PimageTag=$CI_COMMIT_SHA -PregistryUser=$CI_REGISTRY_USER -PregistryPassword=$CI_REGISTRY_PASSWORD -PregistryEmail=$GITLAB_USER_EMAIL"
