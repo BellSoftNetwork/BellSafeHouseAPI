@@ -1,0 +1,19 @@
+image: gradle:7.5.0-jdk17
+
+stages:
+  - test
+  - build
+  - package
+#  - deploy
+
+lint-check:
+  stage: test
+  script: "gradle ktlintCheck"
+
+unit-test:
+  stage: test
+  script: "gradle test"
+
+image-build:
+  stage: build
+  script: "gradle bootBuildImage --publishImage -PregistryUrl=$CI_REGISTRY_URL -PimageBaseName=$CI_REGISTRY_IMAGE -PimageTag=$CI_COMMIT_SHA -PregistryUser=$CI_REGISTRY_USER -PregistryPassword=$CI_REGISTRY_PASSWORD -PregistryEmail=$GITLAB_USER_EMAIL"
