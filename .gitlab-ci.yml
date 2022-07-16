@@ -6,6 +6,15 @@ stages:
   - package
 #  - deploy
 
+default:
+  retry:
+    max: 2
+    when:
+      - unknown_failure
+      - api_failure
+      - stuck_or_timeout_failure
+      - runner_system_failure
+
 lint-check:
   stage: test
   script: "gradle ktlintCheck"
