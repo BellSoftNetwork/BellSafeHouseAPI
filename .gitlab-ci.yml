@@ -17,14 +17,24 @@ default:
 
 lint-check:
   stage: test
-  script: "gradle ktlintCheck"
+  script:
+    - gradle ktlintCheck
 
 unit-test:
   stage: test
-  script: "gradle test"
+  script:
+    - gradle test
 
 image-build:
   stage: build
   services:
     - docker:dind
-  script: "gradle bootBuildImage --publishImage -PregistryUrl=$CI_REGISTRY_URL -PimageBaseName=$CI_REGISTRY_IMAGE -PimageTag=$CI_COMMIT_SHA -PregistryUser=$CI_REGISTRY_USER -PregistryPassword=$CI_REGISTRY_PASSWORD -PregistryEmail=$GITLAB_USER_EMAIL"
+  variables:
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_VERIFY: 1
+    DOCKER_CERT_PATH: "$DOCKER_TLS_CERTDIR/client"
+  before_script: # TODO: debug
+    - docker info
+  script:
+    - gradle bootBuildImage --publishImage -PregistryUrl=$CI_REGISTRY_URL -PimageBaseName=$CI_REGISTRY_IMAGE -PimageTag=$CI_COMMIT_SHA -PregistryUser=$CI_REGISTRY_USER -PregistryPassword=$CI_REGISTRY_PASSWORD -PregistryEmail=$GITLAB_USER_EMAIL
