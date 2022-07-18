@@ -31,7 +31,7 @@ test:
       junit: build/test-results/test/**/TEST-*.xml
 
 test_coverage_visualize:
-  image: registry.gitlab.com/haynes/jacoco2cobertura:${JACOCO2COBERTURA_VERSION}
+  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/haynes/jacoco2cobertura:${JACOCO2COBERTURA_VERSION}
   extends:
     - .test
   needs:

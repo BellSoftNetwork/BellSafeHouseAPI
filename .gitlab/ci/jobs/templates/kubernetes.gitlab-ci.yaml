@@ -14,7 +14,7 @@
 
 .setup_kubectl:
   image:
-    name: thisiskj/kubectl-envsubst:latest
+    name: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/thisiskj/kubectl-envsubst:latest
     entrypoint: [ '' ]
   before_script:
     - *setup_kubectl_context_script
