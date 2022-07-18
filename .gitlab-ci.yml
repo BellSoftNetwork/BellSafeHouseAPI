@@ -22,7 +22,6 @@ variables:
 
 stages:
   - test
-  - visualize
   - build
   - review
   - staging
