@@ -1,0 +1,10 @@
+# 사용 시 GitLab Runner 설정에서 docker in docker TLS 설정 필요
+# https://docs.gitlab.com/ee/ci/docker/using_docker_build.html#docker-in-docker-with-tls-enabled-in-kubernetes
+.in_docker:
+  services:
+    - docker:dind
+  variables:
+    DOCKER_HOST: tcp://docker:2376
+    DOCKER_TLS_CERTDIR: "/certs"
+    DOCKER_TLS_VERIFY: 1
+    DOCKER_CERT_PATH: "${DOCKER_TLS_CERTDIR}/client"

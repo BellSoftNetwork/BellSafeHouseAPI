@@ -1,0 +1,21 @@
+# gradle 기본 구성
+.gradle:
+  image: gradle:${GRADLE_VERSION}
+
+# 사용 시 gradle 명령 인자 추가 필요
+# `gradle ${GRADLE_CACHE_ARGS}`
+# ex) `gradle ${GRADLE_CACHE_ARGS} build`
+.gradle_cache:
+  extends:
+    - .gradle
+  variables:
+    GRADLE_USER_HOME_DIR: gradle-home
+    GRADLE_CACHE_ARGS: --build-cache --gradle-user-home ${GRADLE_USER_HOME_DIR}
+  cache:
+    key:
+      files:
+        - gradle/wrapper/gradle-wrapper.properties
+    paths:
+      - ${GRADLE_USER_HOME_DIR}/caches/
+      - ${GRADLE_USER_HOME_DIR}/notifications/
+      - ${GRADLE_USER_HOME_DIR}/wrapper/
