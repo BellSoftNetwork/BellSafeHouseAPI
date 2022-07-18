@@ -1,0 +1,28 @@
+include:
+  - local: /.gitlab/ci/jobs/templates/gradle.gitlab-ci.yaml
+  - local: /.gitlab/ci/jobs/templates/docker.gitlab-ci.yaml
+
+.build:
+  extends:
+    - .gradle_cache
+  stage: build
+  needs:
+    - test
+  rules:
+    - if: "$TEST_DISABLED || $BUILD_DISABLED"
+      when: never
+    - if: "$CI_COMMIT_REF_PROTECTED"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event" && "$CI_MERGE_REQUEST_TARGET_BRANCH_PROTECTED"
+    - if: "$CI_COMMIT_REF_NAME"
+      when: manual
+
+build_boot_image:
+  extends:
+    - .build
+    - .in_docker
+  variables:
+    PROPERTY_REGISTRY: "-PregistryUrl=${CI_REGISTRY_URL} -PregistryUser=${CI_REGISTRY_USER} -PregistryPassword=${CI_REGISTRY_PASSWORD} -PregistryEmail=${GITLAB_USER_EMAIL}"
+    PROPERTY_IMAGE: "-PimagePath=${CI_REGISTRY_IMAGE} -PimageBaseName=${CI_COMMIT_REF_NAME} -PimageTag=${CI_COMMIT_SHA}"
+    PROPERTY_DOCKER: "-PdockerHost=${DOCKER_HOST} -PisDockerTlsVerify=true -PdockerCertPath=${DOCKER_CERT_PATH}"
+  script:
+    - gradle bootBuildImage ${GRADLE_CACHE_ARGS} --publishImage ${PROPERTY_REGISTRY} ${PROPERTY_IMAGE} ${PROPERTY_DOCKER}

@@ -1,0 +1,72 @@
+.setup_kubectl_context_script: &setup_kubectl_context_script
+  - kubectl config use-context ${KUBE_CONTEXT}
+  - kubectl config set-context --current --namespace="${APPLICATION_NAMESPACE}"
+  - echo "kubectl context ready"
+
+.convert_kubernetes_resource_script: &convert_kubernetes_resource_script
+  - cd ${KUBERNETES_RESOURCE_PATH}
+  - |
+    for filename in *.yaml
+    do
+      envsubst < ${filename} > ${KUBERNETES_DEPLOY_YAML_PATH}/${filename}
+      echo "'${filename}' converted"
+    done
+  - cd -
+
+.setup_kubectl:
+  image:
+    name: thisiskj/kubectl-envsubst:latest
+    entrypoint: [ '' ]
+  before_script:
+    - *setup_kubectl_context_script
+
+.kubernetes_deploy_variables: &kubernetes_deploy_variables
+  KUBERNETES_DEPLOY_YAML_PATH: ${CI_PROJECT_DIR}/.kubernetes
+  APPLICATION_NAME: ${CI_PROJECT_PATH_SLUG}
+  APPLICATION_DEPLOYMENT_NAME: ${CI_PROJECT_PATH_SLUG}
+  APPLICATION_ENVIRONMENT: ${CI_ENVIRONMENT_SLUG}
+
+.setup_kubernetes_application_resource_yaml:
+  variables:
+    <<: *kubernetes_deploy_variables
+    KUBERNETES_RESOURCE_PATH: ${CI_PROJECT_DIR}/src/main/kubernetes
+    APPLICATION_IMAGE_URL: ${CI_REGISTRY_IMAGE}/${CI_COMMIT_REF_NAME}:${CI_COMMIT_SHA}
+    APPLICATION_IMAGE_EXPOSE_PORT: 8080
+    APPLICATION_REPLICAS: 1
+  before_script:
+    - *setup_kubectl_context_script
+    - *convert_kubernetes_resource_script
+
+.save_kubernetes_resources_to_artifacts:
+  variables:
+    <<: *kubernetes_deploy_variables
+  artifacts:
+    name: kubernetes_yaml
+    paths:
+      - ${KUBERNETES_DEPLOY_YAML_PATH}
+
+.kubernetes_apply:
+  variables:
+    <<: *kubernetes_deploy_variables
+  script:
+    - |
+      for filename in ${KUBERNETES_DEPLOY_YAML_PATH}/*.yaml
+      do
+        kubectl apply -f ${filename}
+      done
+    - |
+      if ! kubectl rollout status deployment ${APPLICATION_DEPLOYMENT_NAME}; then
+        kubectl rollout undo deployment ${APPLICATION_DEPLOYMENT_NAME}
+        kubectl rollout status deployment ${APPLICATION_DEPLOYMENT_NAME}
+        exit 1
+      fi
+
+.kubernetes_delete:
+  variables:
+    <<: *kubernetes_deploy_variables
+  script:
+    - |
+      for filename in ${KUBERNETES_DEPLOY_YAML_PATH}/*.yaml
+      do
+        kubectl delete -f ${filename}
+      done

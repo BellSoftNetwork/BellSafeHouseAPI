@@ -7,6 +7,8 @@ import org.springframework.web.bind.annotation.RestController
 class MainController {
     @GetMapping("/")
     fun displayIndex(): String {
+        if (false)
+            println("no covered")
         return "Bell Safe House Index API"
     }
 }

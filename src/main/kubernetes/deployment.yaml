@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${APPLICATION_DEPLOYMENT_NAME}
+  namespace: ${APPLICATION_NAMESPACE}
+  annotations:
+    bellsoft.net/application: ${APPLICATION_NAME}
+    bellsoft.net/environment: ${APPLICATION_ENVIRONMENT}
+  labels:
+    app: ${APPLICATION_NAME}
+    env: ${APPLICATION_ENVIRONMENT}
+spec:
+  replicas: ${APPLICATION_REPLICAS}
+  selector:
+    matchLabels:
+      app: ${APPLICATION_NAME}
+      env: ${APPLICATION_ENVIRONMENT}
+  template:
+    metadata:
+      labels:
+        app: ${APPLICATION_NAME}
+        env: ${APPLICATION_ENVIRONMENT}
+      annotations:
+        app.gitlab.com/app: ${APPLICATION_NAME}
+        app.gitlab.com/env: ${APPLICATION_ENVIRONMENT}
+    spec:
+      containers:
+        - name: ${APPLICATION_NAME}
+          image: ${APPLICATION_IMAGE_URL}
+          ports:
+            - containerPort: ${APPLICATION_IMAGE_EXPOSE_PORT}

@@ -1,4 +1,6 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
+import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
     id("org.springframework.boot") version "2.7.1"
@@ -99,28 +101,49 @@ tasks.named<KotlinCompile>("compileKotlin") {
     }
 }
 
-tasks.named<org.springframework.boot.gradle.tasks.run.BootRun>("bootRun") {
+tasks.named<BootRun>("bootRun") {
+    setupEnvironment()
+}
+
+fun BootRun.setupEnvironment() {
     environment("SPRING_PROFILES_ACTIVE", "production")
 }
 
-tasks.named<org.springframework.boot.gradle.tasks.bundling.BootBuildImage>("bootBuildImage") {
-    environment("SPRING_PROFILES_ACTIVE", "production")
+tasks.named<BootBuildImage>("bootBuildImage") {
+    setupEnvironment()
+    setupImageProperty()
+    setupDocker()
+}
 
+fun BootBuildImage.setupEnvironment() {
+    environment("SPRING_PROFILES_ACTIVE", "production")
+}
+
+fun BootBuildImage.setupImageProperty() {
+    val imagePath: String by project
     val imageBaseName: String by project
     val imageTag: String by project
+
+    if (project.hasProperty("imagePath")) imageName = imagePath
+    if (project.hasProperty("imageBaseName")) imageName += "/$imageBaseName"
+    if (project.hasProperty("imageTag")) tags = mutableListOf("$imageName:$imageTag")
+}
+
+fun BootBuildImage.setupDocker() {
+    val dockerHost: String by project
+    val isDockerTlsVerify: String by project
+    val dockerCertPath: String by project
+
     val registryUrl: String by project
     val registryUser: String by project
     val registryPassword: String by project
     val registryEmail: String by project
 
-    if (project.hasProperty("imageBaseName")) {
-        imageName = imageBaseName
-
-        if (project.hasProperty("imageTag"))
-            tags = mutableListOf("$imageBaseName:$imageTag")
-    }
-
     docker {
+        if (project.hasProperty("dockerHost")) host = dockerHost
+        if (project.hasProperty("isDockerTlsVerify")) isTlsVerify = isDockerTlsVerify.toBoolean()
+        if (project.hasProperty("dockerCertPath")) certPath = dockerCertPath
+
         publishRegistry {
             if (project.hasProperty("registryUrl")) url = registryUrl
             if (project.hasProperty("registryUser")) username = registryUser
@@ -144,8 +167,8 @@ val jacocoDefaultExcludeFiles = listOf(
 
 tasks.jacocoTestReport {
     reports {
-        csv.required.set(true)
-        csv.outputLocation.set(file("$buildDir/jacoco/csv"))
+        xml.required.set(true)
+        xml.outputLocation.set(file("$buildDir/jacoco/jacoco.xml"))
     }
 
     finalizedBy("jacocoTestCoverageVerification") // 활성화시 violationRules 통과 실패할경우 테스트도 실패처리 됨
