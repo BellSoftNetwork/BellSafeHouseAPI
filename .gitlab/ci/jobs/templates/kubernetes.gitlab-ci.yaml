@@ -6,8 +6,7 @@
 .convert_kubernetes_resource_script: &convert_kubernetes_resource_script
   - cd ${KUBERNETES_RESOURCE_PATH}
   - |
-    for filename in *.yaml
-    do
+    for filename in *.yaml; do
       envsubst < ${filename} > ${KUBERNETES_DEPLOY_YAML_PATH}/${filename}
       echo "'${filename}' converted"
     done
@@ -50,23 +49,30 @@
     <<: *kubernetes_deploy_variables
   script:
     - |
-      for filename in ${KUBERNETES_DEPLOY_YAML_PATH}/*.yaml
-      do
+      echo "Start the deployment"
+      for filename in ${KUBERNETES_DEPLOY_YAML_PATH}/*.yaml; do
         kubectl apply -f ${filename}
       done
     - |
       if ! kubectl rollout status deployment ${APPLICATION_DEPLOYMENT_NAME}; then
+        echo "Rollback to the previous version because the application deployment failed."
         kubectl rollout undo deployment ${APPLICATION_DEPLOYMENT_NAME}
-        kubectl rollout status deployment ${APPLICATION_DEPLOYMENT_NAME}
+        if ! kubectl rollout status deployment ${APPLICATION_DEPLOYMENT_NAME}; then
+          echo "Application rollback is failed"
+        else
+          echo "Application rollback is complete"
+        fi
+      
         exit 1
       fi
+      echo "Application successfully deployed!"
 
 .kubernetes_delete:
   variables:
     <<: *kubernetes_deploy_variables
   script:
     - |
-      for filename in ${KUBERNETES_DEPLOY_YAML_PATH}/*.yaml
-      do
+      echo "Delete the application environment"
+      for filename in ${KUBERNETES_DEPLOY_YAML_PATH}/*.yaml; do
         kubectl delete -f ${filename}
       done
