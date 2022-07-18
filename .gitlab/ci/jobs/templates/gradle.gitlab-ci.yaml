@@ -1,6 +1,6 @@
 # gradle 기본 구성
 .gradle:
-  image: gradle:${GRADLE_VERSION}
+  image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/gradle:${GRADLE_VERSION}
 
 # 사용 시 gradle 명령 인자 추가 필요
 # `gradle ${GRADLE_CACHE_ARGS}`
