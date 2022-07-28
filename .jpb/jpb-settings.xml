@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DatabaseMigrationSettings" liquibaseFileType="YAML" mainChangeLogName="#date(&quot;dd&quot;)-#date(&quot;hh&quot;)#date(&quot;mm&quot;)#date(&quot;ss&quot;)-#increment(1, 1, &quot;00&quot;)-changelog" secondaryChangeLogName="#date(&quot;dd&quot;)-#date(&quot;hh&quot;)#date(&quot;mm&quot;)#date(&quot;ss&quot;)-#increment(1, 1, &quot;00&quot;)-changelog" />
+</project>
