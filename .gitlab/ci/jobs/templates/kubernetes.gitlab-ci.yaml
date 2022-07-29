@@ -42,6 +42,7 @@
     <<: *kubernetes_deploy_variables
   artifacts:
     name: kubernetes_yaml
+    when: always
     paths:
       - ${KUBERNETES_DEPLOY_YAML_PATH}
 
