@@ -89,8 +89,8 @@
 
         exit 1
       fi
-      print_deployment_status "Current"
       echo "Application successfully deployed!"
+    - print_deployment_status "Current"
 
 .kubernetes_delete:
   variables:
