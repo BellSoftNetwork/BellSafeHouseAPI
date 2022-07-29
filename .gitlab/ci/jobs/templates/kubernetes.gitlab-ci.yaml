@@ -68,18 +68,18 @@
     - *deployment_revision
     - *deployment_change_cause
     - *print_deployment_status
-    - print_deployment_status "Current"
+    - print_deployment_status "Before"
     - | # Kubernetes Apply Resources
       echo "Start the deployment"
       for filename in ${KUBERNETES_DEPLOY_YAML_PATH}/*.yaml; do
         kubectl apply -f ${filename}
       done
-    - print_deployment_status "New"
+    - print_deployment_status "Expected"
     - | # Kubernetes Rollout Status Wait
       if ! kubectl rollout status deployment ${APPLICATION_DEPLOYMENT_NAME}; then
         echo "Rollback to the previous version because the application deployment failed."
         kubectl rollout undo deployment ${APPLICATION_DEPLOYMENT_NAME}
-        print_deployment_status "Undo"
+        print_deployment_status "Rollback"
 
         if ! kubectl rollout status deployment ${APPLICATION_DEPLOYMENT_NAME}; then
           echo "Application rollback is failed"
@@ -89,12 +89,8 @@
 
         exit 1
       fi
+      print_deployment_status "Current"
       echo "Application successfully deployed!"
-  after_script:
-    - *deployment_revision
-    - *deployment_change_cause
-    - *print_deployment_status
-    - print_deployment_status "Final"
 
 .kubernetes_delete:
   variables:
