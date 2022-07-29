@@ -45,34 +45,56 @@
     paths:
       - ${KUBERNETES_DEPLOY_YAML_PATH}
 
+.deployment_revision: &deployment_revision |
+  deployment_revision() {
+    echo $(kubectl rollout history deployment ${APPLICATION_DEPLOYMENT_NAME} -o=jsonpath='{.metadata.annotations.deployment\.kubernetes\.io/revision}')
+  }
+
+.deployment_change_cause: &deployment_change_cause |
+  deployment_change_cause() {
+    echo $(kubectl rollout history deployment ${APPLICATION_DEPLOYMENT_NAME} -o=jsonpath='{.metadata.annotations.kubernetes\.io/change-cause}')
+  }
+
+.print_deployment_status: &print_deployment_status |
+  print_deployment_status() {
+    echo "[$1] Deployment revision: ${deployment_revision}"
+    echo "[$1] Deployment change cause: ${deployment_change_cause}"
+  }
+
 .kubernetes_apply:
   variables:
     <<: *kubernetes_deploy_variables
   script:
+    - *deployment_revision
+    - *deployment_change_cause
+    - *print_deployment_status
+    - print_deployment_status "Current"
     - | # Kubernetes Apply Resources
       echo "Start the deployment"
       for filename in ${KUBERNETES_DEPLOY_YAML_PATH}/*.yaml; do
         kubectl apply -f ${filename}
       done
-    - | # Kubernetes Deployment Current Revision Load
-      export APPLICATION_REVISION=$(kubectl rollout history deployment ${APPLICATION_DEPLOYMENT_NAME} -o=jsonpath='{.metadata.annotations.deployment\.kubernetes\.io/revision}')
-      echo "Application deployment revision: ${APPLICATION_REVISION}"
+    - print_deployment_status "New"
     - | # Kubernetes Rollout Status Wait
       if ! kubectl rollout status deployment ${APPLICATION_DEPLOYMENT_NAME}; then
         echo "Rollback to the previous version because the application deployment failed."
         kubectl rollout undo deployment ${APPLICATION_DEPLOYMENT_NAME}
+        print_deployment_status "Undo"
+
         if ! kubectl rollout status deployment ${APPLICATION_DEPLOYMENT_NAME}; then
           echo "Application rollback is failed"
         else
           echo "Application rollback is complete"
         fi
 
-        export APPLICATION_ROLLBACK_REVISION=$(kubectl rollout history deployment ${APPLICATION_DEPLOYMENT_NAME} -o=jsonpath='{.metadata.annotations.deployment\.kubernetes\.io/revision}')
-        echo "Application rollback deployment revision: ${APPLICATION_ROLLBACK_REVISION}"
-
         exit 1
       fi
       echo "Application successfully deployed!"
+  after_script:
+    - *deployment_revision
+    - *deployment_change_cause
+    - *print_deployment_status
+    - print_deployment_status "Final"
 
 .kubernetes_delete:
   variables:
