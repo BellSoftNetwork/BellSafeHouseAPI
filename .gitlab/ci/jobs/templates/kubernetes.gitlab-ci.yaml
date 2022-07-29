@@ -57,8 +57,8 @@
 
 .print_deployment_status: &print_deployment_status |
   print_deployment_status() {
-    echo "[$1] Deployment revision: ${deployment_revision}"
-    echo "[$1] Deployment change cause: ${deployment_change_cause}"
+    echo "[$1] Deployment revision: $(deployment_revision)"
+    echo "[$1] Deployment change cause: $(deployment_change_cause)"
   }
 
 .kubernetes_apply:
