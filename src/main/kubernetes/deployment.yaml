@@ -4,6 +4,7 @@ metadata:
   name: ${APPLICATION_DEPLOYMENT_NAME}
   namespace: ${APPLICATION_NAMESPACE}
   annotations:
+    kubernetes.io/change-cause: "${APPLICATION_CHANGE_CAUSE}"
     bellsoft.net/application: ${APPLICATION_NAME}
     bellsoft.net/environment: ${APPLICATION_ENVIRONMENT}
   labels:
