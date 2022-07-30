@@ -4,7 +4,7 @@ metadata:
   name: ${APPLICATION_NAME}
   namespace: ${APPLICATION_NAMESPACE}
   annotations:
-    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    cert-manager.io/cluster-issuer: "${CERT_MANAGER_CLUSTER_ISSUER}"
     acme.cert-manager.io/http01-edit-in-place: "true"
     nginx.org/websocket-services: "${APPLICATION_NAME}"
   labels:

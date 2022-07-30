@@ -21,6 +21,7 @@ deploy_staging:
   variables:
     APPLICATION_URL: staging.${KUBE_INGRESS_BASE_DOMAIN}
     APPLICATION_NAMESPACE: ${KUBE_STAGING_NAMESPACE}
+    CERT_MANAGER_CLUSTER_ISSUER: "letsencrypt-prod"
   environment:
     name: staging
     url: https://${APPLICATION_URL}
