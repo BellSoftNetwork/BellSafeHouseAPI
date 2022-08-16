@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${API_APPLICATION_DEPLOYMENT_NAME}
+  namespace: ${PROJECT_NAMESPACE}
+spec:
+  ports:
+    - port: 8080
+      targetPort: 8080
+      name: ${API_APPLICATION_DEPLOYMENT_NAME}
+  selector:
+    app: ${APPLICATION_NAME}
+    env: local
+    type: api
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${VIEW_APPLICATION_DEPLOYMENT_NAME}
+  namespace: ${PROJECT_NAMESPACE}
+spec:
+  ports:
+    - port: 80
+      targetPort: 80
+      name: ${VIEW_APPLICATION_DEPLOYMENT_NAME}
+  selector:
+    app: ${APPLICATION_NAME}
+    env: local
+    type: view
+  type: ClusterIP
+---
+kind: Ingress
+apiVersion: networking.k8s.io/v1
+metadata:
+  name: ${APPLICATION_NAME}
+  namespace: ${PROJECT_NAMESPACE}
+  annotations:
+    nginx.org/websocket-services: ${API_APPLICATION_DEPLOYMENT_NAME}
+  labels:
+    app: ${APPLICATION_NAME}
+    env: local
+spec:
+  rules:
+    - host: ${APPLICATION_URL}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ${VIEW_APPLICATION_DEPLOYMENT_NAME}
+                port:
+                  number: 80
+          - path: /api/
+            pathType: Prefix
+            backend:
+              service:
+                name: ${API_APPLICATION_DEPLOYMENT_NAME}
+                port:
+                  number: 8080

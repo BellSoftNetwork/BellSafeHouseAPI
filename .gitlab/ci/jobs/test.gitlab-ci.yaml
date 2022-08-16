@@ -28,7 +28,7 @@ test:
       - ${JACOCO_XML_LOCATION}
     when: always
     reports:
-      junit: build/test-results/test/**/TEST-*.xml
+      junit: ${CI_PROJECT_DIR}/build/test-results/test/**/TEST-*.xml
 
 test_coverage_visualize:
   image: ${CI_DEPENDENCY_PROXY_GROUP_IMAGE_PREFIX}/haynes/jacoco2cobertura:${JACOCO2COBERTURA_VERSION}
@@ -37,7 +37,7 @@ test_coverage_visualize:
   needs:
     - test
   variables:
-    COVERAGE_REPORT_PATH: "build/cobertura.xml"
+    COVERAGE_REPORT_PATH: "${CI_PROJECT_DIR}/build/cobertura.xml"
   script:
     - python /opt/cover2cover.py ${JACOCO_XML_LOCATION} ${CI_PROJECT_DIR}/src/main/kotlin/ > ${COVERAGE_REPORT_PATH}
   artifacts:

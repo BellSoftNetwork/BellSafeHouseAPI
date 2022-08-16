@@ -22,9 +22,10 @@ deploy_production:
     APPLICATION_URL: ${KUBE_INGRESS_BASE_DOMAIN}
     APPLICATION_NAMESPACE: ${KUBE_PRODUCTION_NAMESPACE}
     CERT_MANAGER_CLUSTER_ISSUER: "letsencrypt-prod"
+    DEPLOY_ENVIRONMENT: "production"
   environment:
     name: production
-    url: https://${APPLICATION_URL}
+    url: https://${APPLICATION_URL}/api/
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
       when: manual

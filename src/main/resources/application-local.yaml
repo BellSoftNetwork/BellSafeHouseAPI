@@ -1,0 +1,10 @@
+application:
+  deploy:
+    environment: "local"
+
+spring:
+  # DB - JPA
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true

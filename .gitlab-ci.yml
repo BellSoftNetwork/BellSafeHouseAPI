@@ -2,12 +2,15 @@
 # Bell Soft Network Infra 전용 CI/CD 파이프라인 정의
 #
 # [필수 구성 변수]
-# KUBE_CONTEXT: {KAS 가 연결된 깃랩 repo 주소}:{에이전트명} (ex. BSN/bsn-primary-agent:primary-agent})
-# KUBE_NAMESPACE: kubernetes 배포에 사용할 기본 네임스페이스
-# KUBE_STAGING_NAMESPACE: kubernetes 스테이징 배포에 사용할 네임스페이스
-# KUBE_PRODUCTION_NAMESPACE: kubernetes 프로덕션 배포에 사용할 네임스페이스
-# KUBE_INGRESS_BASE_DOMAIN: kubernetes 내 ingress 에 등록할 기본 도메인
-#  (ex. `bell-safe-house.bellsoft.net` 으로 설정 후 develop 브랜치 배포시 `https://develop.bell-safe-house.bellsoft.net` 으로 등록됨)
+# - KUBE_CONTEXT: {KAS 가 연결된 깃랩 repo 주소}:{에이전트명} (ex. BSN/bsn-primary-agent:primary-agent})
+# - KUBE_NAMESPACE: kubernetes 배포에 사용할 기본 네임스페이스
+# - KUBE_STAGING_NAMESPACE: kubernetes 스테이징 배포에 사용할 네임스페이스
+# - KUBE_PRODUCTION_NAMESPACE: kubernetes 프로덕션 배포에 사용할 네임스페이스
+# - KUBE_INGRESS_BASE_DOMAIN: kubernetes 내 ingress 에 등록할 기본 도메인
+#    (ex. `bell-safe-house.bellsoft.net` 으로 설정 후 develop 브랜치 배포시 `https://develop.bell-safe-house.bellsoft.net` 으로 등록됨)
+# - PROJECT_NAME: kubernetes 내 ingress rule 에 등록할 프로젝트 이름 (백엔드와 프론트엔드 동일하게 설정 필요, 소문자 및 - 만 허용)
+#    (ex. 백엔드와 프론트엔드에 동일하게 `bell-safe-house` 로 설정)
+#
 #
 # [설정 가능한 변수]
 # - GRADLE_VERSION: gradle 버전
@@ -32,7 +35,7 @@ include:
   - local: /.gitlab/ci/jobs/templates/default.gitlab-ci.yaml # 공통 구성요소 템플릿
   - local: /.gitlab/ci/jobs/test.gitlab-ci.yaml
   - local: /.gitlab/ci/jobs/build.gitlab-ci.yaml
-  - local: /.gitlab/ci/jobs/review.gitlab-ci.yaml
+  - local: /.gitlab/ci/jobs/development.gitlab-ci.yaml
   - local: /.gitlab/ci/jobs/staging.gitlab-ci.yaml
   - local: /.gitlab/ci/jobs/deploy.gitlab-ci.yaml
   - template: Workflows/MergeRequest-Pipelines.gitlab-ci.yml # https://gitlab.com/gitlab-org/gitlab/-/blob/master/lib/gitlab/ci/templates/Workflows/MergeRequest-Pipelines.gitlab-ci.yml

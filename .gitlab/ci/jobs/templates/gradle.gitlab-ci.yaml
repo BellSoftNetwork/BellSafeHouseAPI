@@ -9,12 +9,12 @@
   extends:
     - .gradle
   variables:
-    GRADLE_USER_HOME_DIR: gradle-home
+    GRADLE_USER_HOME_DIR: ${CI_PROJECT_DIR}/.gradle-cache
     GRADLE_CACHE_ARGS: --build-cache --gradle-user-home ${GRADLE_USER_HOME_DIR}
   cache:
     key:
       files:
-        - gradle/wrapper/gradle-wrapper.properties
+        - ${CI_PROJECT_DIR}/gradle/wrapper/gradle-wrapper.properties
     paths:
       - ${GRADLE_USER_HOME_DIR}/caches/
       - ${GRADLE_USER_HOME_DIR}/notifications/

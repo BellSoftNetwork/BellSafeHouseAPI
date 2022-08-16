@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${API_APPLICATION_DEPLOYMENT_NAME}
+  namespace: ${PROJECT_NAMESPACE}
+  annotations:
+    bellsoft.net/application: ${APPLICATION_NAME}
+    bellsoft.net/environment: local
+  labels:
+    app: ${APPLICATION_NAME}
+    env: local
+    type: api
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${APPLICATION_NAME}
+      env: local
+      type: api
+  template:
+    metadata:
+      labels:
+        app: ${APPLICATION_NAME}
+        env: local
+        type: api
+      annotations:
+        bellsoft.net/application: ${API_APPLICATION_DEPLOYMENT_NAME}
+        bellsoft.net/environment: local
+    spec:
+      containers:
+        - name: ${API_APPLICATION_DEPLOYMENT_NAME}
+          image: ${APPLICATION_LOCAL_IMAGE_NAME}
+          imagePullPolicy: Never
+          ports:
+            - containerPort: 8080
+            - containerPort: 5005
+          volumeMounts:
+            - mountPath: /home/gradle/project
+              name: project-root
+            - mountPath: /home/gradle/project/.gradle
+              name: root-gradle-cache
+      volumes:
+        - name: project-root
+          hostPath:
+            path: ${KUBERNETES_HOST_SOURCE_MOUNT_PATH}
+        - name: root-gradle-cache
+          emptyDir: { }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${API_APPLICATION_DEPLOYMENT_NAME}-debug
+  namespace: ${PROJECT_NAMESPACE}
+spec:
+  ports:
+    - name: ${API_APPLICATION_DEPLOYMENT_NAME}-debug
+      protocol: TCP
+      port: 5005
+      nodePort: ${API_DEBUG_NODE_PORT}
+      targetPort: 5005
+  selector:
+    app: ${APPLICATION_NAME}
+    env: local
+    type: api
+  type: NodePort

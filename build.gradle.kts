@@ -35,6 +35,7 @@ val liquibaseVersion = "4.9.1"
 val mysqlConnectorVersion = "8.0.29"
 val h2DatabaseVersion = "2.1.214"
 val springdocOpenapiVersion = "1.6.9"
+val kotlinLoggingVersion = "2.1.23"
 val kotestVersion = "5.3.1"
 val kotestSpringExtensionVersion = "4.4.3"
 val mockkVersion = "1.12.4"
@@ -78,6 +79,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation:$springBootVersion")
     implementation("org.springframework.boot:spring-boot-starter-hateoas:$springBootVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("io.github.microutils:kotlin-logging:$kotlinLoggingVersion")
 
     // Ops
     implementation("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")
@@ -106,17 +108,32 @@ tasks.named<BootRun>("bootRun") {
 }
 
 fun BootRun.setupEnvironment() {
-    environment("SPRING_PROFILES_ACTIVE", "production")
+    jvmArgs = listOf("-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=*:5005")
+    environment("SPRING_PROFILES_ACTIVE", "local")
 }
 
+// https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/#build-image
 tasks.named<BootBuildImage>("bootBuildImage") {
     setupEnvironment()
+    setupBuildProperty()
     setupImageProperty()
     setupDocker()
 }
 
 fun BootBuildImage.setupEnvironment() {
     environment("SPRING_PROFILES_ACTIVE", "production")
+}
+
+fun BootBuildImage.setupBuildProperty() {
+    val bindingsDir: String by project
+    val gradleDir: String by project
+
+    val bindingVolumes = mutableListOf<String>()
+
+    if (project.hasProperty("bindingsDir")) bindingVolumes.add("$bindingsDir:/platform/bindings:rw")
+    if (project.hasProperty("gradleDir")) bindingVolumes.add("$gradleDir:/home/cnb/.gradle:rw")
+
+    bindings = bindingVolumes
 }
 
 fun BootBuildImage.setupImageProperty() {
@@ -134,7 +151,8 @@ fun BootBuildImage.setupDocker() {
     val isDockerTlsVerify: String by project
     val dockerCertPath: String by project
 
-    val registryUrl: String by project
+    val proxyRegistryUrl: String by project
+    val projectRegistryUrl: String by project
     val registryUser: String by project
     val registryPassword: String by project
     val registryEmail: String by project
@@ -144,8 +162,15 @@ fun BootBuildImage.setupDocker() {
         if (project.hasProperty("isDockerTlsVerify")) isTlsVerify = isDockerTlsVerify.toBoolean()
         if (project.hasProperty("dockerCertPath")) certPath = dockerCertPath
 
+        // builderRegistry {
+        //     if (project.hasProperty("proxyRegistryUrl")) url = proxyRegistryUrl
+        //     if (project.hasProperty("registryUser")) username = registryUser
+        //     if (project.hasProperty("registryPassword")) password = registryPassword
+        //     if (project.hasProperty("registryEmail")) email = registryEmail
+        // }
+
         publishRegistry {
-            if (project.hasProperty("registryUrl")) url = registryUrl
+            if (project.hasProperty("projectRegistryUrl")) url = projectRegistryUrl
             if (project.hasProperty("registryUser")) username = registryUser
             if (project.hasProperty("registryPassword")) password = registryPassword
             if (project.hasProperty("registryEmail")) email = registryEmail

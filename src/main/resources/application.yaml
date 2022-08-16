@@ -1,0 +1,16 @@
+application:
+  deploy:
+    environment: "default"
+
+# Swagger
+springdoc:
+  swagger-ui:
+    path: "/docs/swagger-ui.html"
+
+spring:
+  # DB - JPA
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false

@@ -6,7 +6,7 @@ metadata:
   annotations:
     cert-manager.io/cluster-issuer: "${CERT_MANAGER_CLUSTER_ISSUER}"
     acme.cert-manager.io/http01-edit-in-place: "true"
-    nginx.org/websocket-services: "${APPLICATION_NAME}"
+    nginx.org/websocket-services: "${APPLICATION_API_SERVICE_NAME}"
   labels:
     app: ${APPLICATION_NAME}
     env: ${APPLICATION_ENVIRONMENT}
@@ -23,6 +23,6 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: ${APPLICATION_NAME}
+                name: ${APPLICATION_API_SERVICE_NAME}
                 port:
-                  number: ${APPLICATION_IMAGE_EXPOSE_PORT}
+                  number: 8080

@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${VIEW_APPLICATION_DEPLOYMENT_NAME}
+  namespace: ${PROJECT_NAMESPACE}
+  annotations:
+    bellsoft.net/application: ${APPLICATION_NAME}
+    bellsoft.net/environment: local
+  labels:
+    app: ${APPLICATION_NAME}
+    env: local
+    type: view
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ${APPLICATION_NAME}
+      env: local
+      type: view
+  template:
+    metadata:
+      labels:
+        app: ${APPLICATION_NAME}
+        env: local
+        type: view
+      annotations:
+        bellsoft.net/application: ${APPLICATION_NAME}
+        bellsoft.net/environment: local
+    spec:
+      containers:
+        - name: ${VIEW_APPLICATION_DEPLOYMENT_NAME}
+          image: ${VIEW_IMAGE_URL}
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 80

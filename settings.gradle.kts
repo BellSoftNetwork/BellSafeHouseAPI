@@ -1,1 +1,1 @@
-rootProject.name = "BellSafeHouse"
+rootProject.name = "BellSafeHouseAPI"

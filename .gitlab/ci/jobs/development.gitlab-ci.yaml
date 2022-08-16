@@ -1,7 +1,7 @@
 include:
   - local: /.gitlab/ci/jobs/templates/kubernetes.gitlab-ci.yaml
 
-.review:
+.development:
   extends:
     - .setup_kubectl
   stage: review
@@ -12,33 +12,19 @@ include:
     - if: "$TEST_DISABLED || $BUILD_DISABLED || $REVIEW_DISABLED"
       when: never
 
-deploy_review:
+deploy_development:
   extends:
-    - .review
+    - .development
     - .setup_kubernetes_application_resource_yaml
     - .kubernetes_apply
     - .save_kubernetes_resources_to_artifacts
   variables:
-    APPLICATION_URL: review-${CI_COMMIT_REF_SLUG}.${KUBE_INGRESS_BASE_DOMAIN}
+    APPLICATION_URL: development.${KUBE_INGRESS_BASE_DOMAIN}
     APPLICATION_NAMESPACE: ${KUBE_NAMESPACE}
+    DEPLOY_ENVIRONMENT: "development"
   environment:
-    name: review/${CI_COMMIT_REF_SLUG}
-    url: https://${APPLICATION_URL}
-    on_stop: stop_review
-    auto_stop_in: 1 week
-  rules:
-    - if: $CI_MERGE_REQUEST_ID
-
-stop_review:
-  extends:
-    - .review
-    - .kubernetes_delete
-  stage: cleanup
-  needs:
-    - deploy_review
-  environment:
-    name: review/${CI_COMMIT_REF_SLUG}
-    action: stop
+    name: development
+    url: https://${APPLICATION_URL}/api/
   rules:
     - if: $CI_MERGE_REQUEST_ID
       when: manual

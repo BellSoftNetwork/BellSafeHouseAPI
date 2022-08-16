@@ -22,8 +22,9 @@ deploy_staging:
     APPLICATION_URL: staging.${KUBE_INGRESS_BASE_DOMAIN}
     APPLICATION_NAMESPACE: ${KUBE_STAGING_NAMESPACE}
     CERT_MANAGER_CLUSTER_ISSUER: "letsencrypt-prod"
+    DEPLOY_ENVIRONMENT: "staging"
   environment:
     name: staging
-    url: https://${APPLICATION_URL}
+    url: https://${APPLICATION_URL}/api/
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH

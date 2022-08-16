@@ -1,6 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="All Test" type="ioKotest" factoryName="Kotest" defaultName="singleModule">
-    <module name="BellSafeHouse.test" />
+    <module name="BellSafeHouseAPI.test" />
     <option name="passParentEnvs" value="true" />
     <option name="workingDirectory" value="$MODULE_WORKING_DIR$" />
     <option name="programParameters" value="" />
