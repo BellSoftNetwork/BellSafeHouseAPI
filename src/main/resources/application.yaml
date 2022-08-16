@@ -8,9 +8,17 @@ springdoc:
     path: "/docs/swagger-ui.html"
 
 spring:
-  # DB - JPA
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://${DATABASE_MYSQL_HOST}/${DATABASE_MYSQL_SCHEMA:bellsafehouse}?${DATABASE_MYSQL_OPTION:charset=utf8mb4,utf8&createDatabaseIfNotExsist=true}
+    username: ${DATABASE_MYSQL_USER}
+    password: ${DATABASE_MYSQL_PASSWORD}
   jpa:
     show-sql: false
     properties:
       hibernate:
         format_sql: false
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+  sql:
+    init:
+      platform: mysql

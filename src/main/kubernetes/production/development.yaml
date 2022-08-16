@@ -8,7 +8,7 @@ metadata:
     acme.cert-manager.io/http01-edit-in-place: "true"
     nginx.org/websocket-services: "${APPLICATION_API_SERVICE_NAME}"
   labels:
-    app: ${APPLICATION_NAME}
+    app: ${PROJECT_NAME}
     env: ${APPLICATION_ENVIRONMENT}
 spec:
   tls:

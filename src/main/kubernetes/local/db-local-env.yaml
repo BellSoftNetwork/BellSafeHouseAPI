@@ -1,0 +1,89 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ${DATABASE_MYSQL_SERVICE_NAME}-data-pv
+spec:
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  hostPath:
+    path: ${KUBERNETES_HOST_MOUNT_PATH_PREFIX}${DATABASE_MYSQL_DATA_HOST_PATH}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: ${DATABASE_MYSQL_SERVICE_NAME}-data-pvc
+  namespace: ${PROJECT_NAMESPACE}
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: local-storage
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${DATABASE_MYSQL_SERVICE_NAME}
+  namespace: ${PROJECT_NAMESPACE}
+  labels:
+    app: mysql
+    env: ${DATABASE_MYSQL_SERVICE_NAME}
+spec:
+  strategy:
+    type: Recreate
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mysql
+      env: ${DATABASE_MYSQL_SERVICE_NAME}
+  template:
+    metadata:
+      labels:
+        app: mysql
+        env: ${DATABASE_MYSQL_SERVICE_NAME}
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:${DATABASE_MYSQL_VERSION}
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "${DATABASE_MYSQL_ROOT_PASSWORD}"
+            - name: MYSQL_USER
+              value: "${DATABASE_MYSQL_APP_USER}"
+            - name: MYSQL_PASSWORD
+              value: "${DATABASE_MYSQL_APP_PASSWORD}"
+            - name: MYSQL_DATABASE
+              value: "${DATABASE_MYSQL_APP_DATABASE}"
+            - name: MYSQL_ROOT_HOST
+              value: "%"
+          ports:
+            - containerPort: 3306
+          volumeMounts:
+            - name: ${DATABASE_MYSQL_SERVICE_NAME}-data-pvc
+              mountPath: /var/lib/mysql
+      volumes:
+        - name: ${DATABASE_MYSQL_SERVICE_NAME}-data-pvc
+          persistentVolumeClaim:
+            claimName: ${DATABASE_MYSQL_SERVICE_NAME}-data-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ${DATABASE_MYSQL_SERVICE_NAME}
+  namespace: ${PROJECT_NAMESPACE}
+spec:
+  ports:
+    - name: mysql
+      protocol: TCP
+      port: 3306
+      nodePort: ${DATABASE_MYSQL_NODE_PORT}
+      targetPort: 3306
+  selector:
+    app: mysql
+    env: ${DATABASE_MYSQL_SERVICE_NAME}
+  type: NodePort

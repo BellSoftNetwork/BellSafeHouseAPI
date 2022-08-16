@@ -20,7 +20,7 @@ source "${BASH_SOURCE%/*}/libs/build-local-image.sh"
 source "${BASH_SOURCE%/*}/libs/create-k8s-namespace.sh"
 
 ## 공통 리소스 생성
-export DEPLOYMENT_YAML_NAME="${COMMON_DEPLOYMENT_YAML_NAME}"
+export DEPLOYMENT_YAML_NAME="${APPLICATION_COMMON_DEPLOYMENT_YAML_NAME}"
 
 source "${BASH_SOURCE%/*}/libs/deploy-k8s-resource.sh"
 

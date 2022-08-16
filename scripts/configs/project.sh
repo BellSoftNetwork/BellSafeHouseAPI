@@ -1,7 +1,10 @@
 #!/bin/bash
 
 # PROJECT CONFIG
-export APPLICATION_LOCAL_IMAGE_NAME="bell-soft-network/bell-safe-house-api"
+export PROJECT_NAME="bell-safe-house"
+export APPLICATION_API_LOCAL_IMAGE_NAME="bell-soft-network/bell-safe-house-api"
+export APPLICATION_VIEW_LOCAL_IMAGE_NAME="bell-soft-network/bell-safe-house-view"
+export APPLICATION_LOCAL_IMAGE_NAME="${APPLICATION_API_LOCAL_IMAGE_NAME}"
 
 export KUBERNETES_DEFAULT_CONTEXT="docker-desktop"
 export KUBERNETES_RESOURCE_PATH="${PROJECT_ROOT_PATH}/src/main/kubernetes/local"

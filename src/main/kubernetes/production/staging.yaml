@@ -7,10 +7,10 @@ spec:
   ports:
     - port: 80
       targetPort: 80
-      name: ${APPLICATION_VIEW_SERVICE_NAME}
+      name: ${APPLICATION_VIEW_NAME}
   selector:
-    app: ${APPLICATION_NAME}
-    env: ${APPLICATION_ENVIRONMENT}
+    app: ${PROJECT_NAME}
+    env: ${APPLICATION_VIEW_ENVIRONMENT}
     type: view
   type: ClusterIP
 ---
@@ -24,7 +24,7 @@ metadata:
     acme.cert-manager.io/http01-edit-in-place: "true"
     nginx.org/websocket-services: "${APPLICATION_API_SERVICE_NAME}"
   labels:
-    app: ${APPLICATION_NAME}
+    app: ${PROJECT_NAME}
     env: ${APPLICATION_ENVIRONMENT}
 spec:
   tls:

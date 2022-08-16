@@ -8,4 +8,4 @@ RUN mkdir $APP_HOME
 
 WORKDIR $APP_HOME
 
-CMD ["/bin/bash", "-c", "./scripts/docker/entrypoint.sh"]
+CMD ["/bin/bash", "-c", "./scripts/docker/entrypoint-run.sh"]

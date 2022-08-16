@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: bell-safe-house-innodb-sa
+  namespace: 환경
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: bell-safe-house-innodb-cluster-secret
+  namespace: 환경
+type: Opaque
+data:
+  rootHost: JQ==
+  rootPassword: BASE64 암호화된 값
+  rootUser: cm9vdA==
+---
+apiVersion: mysql.oracle.com/v2
+kind: InnoDBCluster
+metadata:
+  name: bell-safe-house-innodb
+  namespace: 환경
+spec:
+  backupProfiles:
+    - dumpInstance:
+        storage:
+          persistentVolumeClaim:
+            claimName: bell-safe-house-innodb-backup
+      name: backup-default-pvc
+  backupSchedules:
+    - backupProfileName: backup-default-pvc
+      deleteBackupData: false
+      enabled: true
+      name: schedule-daily
+      schedule: 0 3 * * *
+  imagePullPolicy: IfNotPresent
+  instances: 2
+  router:
+    instances: 2
+  secretName: bell-safe-house-innodb-cluster-secret
+  serviceAccountName: bell-safe-house-innodb-sa
+  tlsUseSelfSigned: true
+  datadirVolumeClaimTemplate:
+    resources:
+      requests:
+        storage: 20Gi
+    storageClass: main-ssd

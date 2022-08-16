@@ -1,35 +1,54 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: ${API_APPLICATION_DEPLOYMENT_NAME}
+  name: ${APPLICATION_API_DEPLOYMENT_NAME}
   namespace: ${PROJECT_NAMESPACE}
   annotations:
-    bellsoft.net/application: ${APPLICATION_NAME}
-    bellsoft.net/environment: local
+    bellsoft.net/application: ${PROJECT_NAME}
+    bellsoft.net/environment: ${APPLICATION_API_ENVIRONMENT}
   labels:
-    app: ${APPLICATION_NAME}
-    env: local
+    app: ${PROJECT_NAME}
+    env: ${APPLICATION_API_ENVIRONMENT}
     type: api
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: ${APPLICATION_NAME}
-      env: local
+      app: ${PROJECT_NAME}
+      env: ${APPLICATION_API_ENVIRONMENT}
       type: api
   template:
     metadata:
       labels:
-        app: ${APPLICATION_NAME}
-        env: local
+        app: ${PROJECT_NAME}
+        env: ${APPLICATION_API_ENVIRONMENT}
         type: api
       annotations:
-        bellsoft.net/application: ${API_APPLICATION_DEPLOYMENT_NAME}
-        bellsoft.net/environment: local
+        bellsoft.net/application: ${APPLICATION_API_DEPLOYMENT_NAME}
+        bellsoft.net/environment: ${APPLICATION_API_ENVIRONMENT}
     spec:
+      initContainers:
+        - name: init-build
+          image: ${APPLICATION_API_LOCAL_IMAGE_NAME}
+          imagePullPolicy: Never
+          command: [ "/bin/bash", "-c", "./scripts/docker/entrypoint-init.sh" ]
+          volumeMounts:
+            - mountPath: /home/gradle/project
+              name: project-root
+            - mountPath: /home/gradle/project/.gradle
+              name: root-gradle-cache
       containers:
-        - name: ${API_APPLICATION_DEPLOYMENT_NAME}
-          image: ${APPLICATION_LOCAL_IMAGE_NAME}
+        - name: continuous-build
+          image: ${APPLICATION_API_LOCAL_IMAGE_NAME}
+          imagePullPolicy: Never
+          volumeMounts:
+            - mountPath: /home/gradle/project
+              name: project-root
+            - mountPath: /home/gradle/project/.gradle
+              name: root-gradle-cache
+          command: [ "/bin/bash", "-c", "./scripts/docker/entrypoint-build.sh" ]
+        - name: boot-run
+          image: ${APPLICATION_API_LOCAL_IMAGE_NAME}
           imagePullPolicy: Never
           ports:
             - containerPort: 8080
@@ -39,6 +58,15 @@ spec:
               name: project-root
             - mountPath: /home/gradle/project/.gradle
               name: root-gradle-cache
+          env:
+            - name: DATABASE_MYSQL_HOST
+              value: ${DATABASE_MYSQL_SERVICE_NAME}
+            - name: DATABASE_MYSQL_USER
+              value: ${DATABASE_MYSQL_APP_USER}
+            - name: DATABASE_MYSQL_PASSWORD
+              value: ${DATABASE_MYSQL_APP_PASSWORD}
+            - name: DATABASE_MYSQL_SCHEMA
+              value: ${DATABASE_MYSQL_APP_DATABASE}
       volumes:
         - name: project-root
           hostPath:
@@ -49,17 +77,17 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: ${API_APPLICATION_DEPLOYMENT_NAME}-debug
+  name: ${APPLICATION_API_DEPLOYMENT_NAME}-debug
   namespace: ${PROJECT_NAMESPACE}
 spec:
   ports:
-    - name: ${API_APPLICATION_DEPLOYMENT_NAME}-debug
+    - name: ${APPLICATION_API_DEPLOYMENT_NAME}-debug
       protocol: TCP
       port: 5005
-      nodePort: ${API_DEBUG_NODE_PORT}
+      nodePort: ${APPLICATION_API_DEBUG_NODE_PORT}
       targetPort: 5005
   selector:
-    app: ${APPLICATION_NAME}
-    env: local
+    app: ${PROJECT_NAME}
+    env: ${APPLICATION_API_ENVIRONMENT}
     type: api
   type: NodePort
