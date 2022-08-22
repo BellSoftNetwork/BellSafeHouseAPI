@@ -41,6 +41,11 @@ val kotestSpringExtensionVersion = "4.4.3"
 val mockkVersion = "1.12.4"
 val springMockkVersion = "3.1.1"
 
+/** ### bootBuildImage Task 에서 사용하는 빌더 이미지 버전
+ * 빌더 버전 업데이트 시 `bindings/VERSION.md` 파일 업데이트 필요
+ */
+val paketoBuildpacksBuilderVersion = "0.3.44-base"
+
 dependencies {
     // Language
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinReflectVersion")
@@ -134,6 +139,7 @@ fun BootBuildImage.setupBuildProperty() {
     if (project.hasProperty("gradleDir")) bindingVolumes.add("$gradleDir:/home/cnb/.gradle:rw")
 
     bindings = bindingVolumes
+    builder = "paketobuildpacks/builder:$paketoBuildpacksBuilderVersion"
 }
 
 fun BootBuildImage.setupImageProperty() {
