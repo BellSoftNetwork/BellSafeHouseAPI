@@ -69,12 +69,12 @@ spec:
                   name: ${APPLICATION_NAME}-connection
                   key: DATABASE_MYSQL_OPTION
                   optional: true
-            - name: DATABASE_USER
+            - name: DATABASE_MYSQL_USER
               valueFrom:
                 secretKeyRef:
                   name: ${APPLICATION_NAME}-connection
                   key: DATABASE_MYSQL_USER
-            - name: DATABASE_PASSWORD
+            - name: DATABASE_MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: ${APPLICATION_NAME}-connection
