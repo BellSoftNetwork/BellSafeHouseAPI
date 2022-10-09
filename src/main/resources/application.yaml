@@ -10,7 +10,7 @@ springdoc:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://${DATABASE_MYSQL_HOST}/${DATABASE_MYSQL_SCHEMA:bellsafehouse}?${DATABASE_MYSQL_OPTION:charset=utf8mb4,utf8&createDatabaseIfNotExsist=true}
+    url: jdbc:mysql://${DATABASE_MYSQL_HOST}/${DATABASE_MYSQL_SCHEMA:bellsafehouse}?${DATABASE_MYSQL_OPTION:charset=utf8mb4,utf8&createDatabaseIfNotExist=true}
     username: ${DATABASE_MYSQL_USER}
     password: ${DATABASE_MYSQL_PASSWORD}
   jpa:
@@ -22,3 +22,14 @@ spring:
   sql:
     init:
       platform: mysql
+  test:
+    database:
+      replace: none
+  liquibase:
+    change-log: classpath:/db/changelog-master.yaml
+    database-change-log-table: database_changelog
+    database-change-log-lock-table: database_changelog_lock
+
+logging:
+  level:
+    liquibase: INFO

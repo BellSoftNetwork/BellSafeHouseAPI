@@ -3,9 +3,10 @@ import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
-    id("org.springframework.boot") version "2.7.1"
+    id("org.springframework.boot") version "2.7.2"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
+    id("org.liquibase.gradle") version "2.1.1"
 
     jacoco
 
@@ -26,79 +27,145 @@ repositories {
     mavenCentral()
 }
 
-val kotlinReflectVersion = "1.7.10"
-val springBootVersion = "2.7.1"
-val springSecurityVersion = "5.7.2"
-val springBatchVersion = "4.3.6"
-val springRabbitVersion = "2.4.6"
-val liquibaseVersion = "4.9.1"
-val mysqlConnectorVersion = "8.0.29"
-val h2DatabaseVersion = "2.1.214"
-val springdocOpenapiVersion = "1.6.9"
-val kotlinLoggingVersion = "2.1.23"
-val kotestVersion = "5.3.1"
-val kotestSpringExtensionVersion = "4.4.3"
-val mockkVersion = "1.12.4"
-val springMockkVersion = "3.1.1"
+object Versions {
+    const val kotlinReflect = "1.7.10"
+    const val springBoot = "2.7.2"
+    const val springSecurity = "5.7.2"
+    const val springBatch = "4.3.6"
+    const val springRabbit = "2.4.6"
+    const val liquibase = "4.9.1"
+    const val mysqlConnector = "8.0.29"
+    const val h2Database = "2.1.214"
+    const val springdocOpenapi = "1.6.9"
+    const val kotlinLogging = "2.1.23"
+    const val kotest = "5.4.1"
+    const val kotestExtensionSpring = "1.1.2"
+    const val mockk = "1.12.4"
+    const val springMockk = "3.1.1"
 
-/** ### bootBuildImage Task 에서 사용하는 빌더 이미지 버전
- * 빌더 버전 업데이트 시 `bindings/VERSION.md` 파일 업데이트 필요
- */
-val paketoBuildpacksBuilderVersion = "0.3.44-base"
+    /** ### bootBuildImage Task 에서 사용하는 빌더 이미지 버전
+     * 빌더 버전 업데이트 시 `bindings/VERSION.md` 파일 업데이트 필요
+     */
+    const val paketoBuildpacksBuilder = "0.3.44-base"
+}
+
+object Libraries {
+    // Language
+    const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlinReflect}"
+    const val kotlinStandardLibrary = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlinReflect}"
+
+    // Server
+    const val springBootStarterWeb = "org.springframework.boot:spring-boot-starter-web:${Versions.springBoot}"
+
+    // DB
+    const val springBootStarterDataJpa = "org.springframework.boot:spring-boot-starter-data-jpa:${Versions.springBoot}"
+    const val liquibase = "org.liquibase:liquibase-core:${Versions.liquibase}"
+
+    const val mysqlConnector = "mysql:mysql-connector-java:${Versions.mysqlConnector}"
+    const val h2Database = "com.h2database:h2:${Versions.h2Database}"
+
+    // Broker
+    const val springBootStarterAMQP = "org.springframework.boot:spring-boot-starter-amqp:${Versions.springBoot}"
+    const val springRabbitTest = "org.springframework.amqp:spring-rabbit-test:${Versions.springRabbit}"
+
+    // Security
+    const val springBootStarterSecurity = "org.springframework.boot:spring-boot-starter-security:${Versions.springBoot}"
+    const val springSecurityTest = "org.springframework.security:spring-security-test:${Versions.springSecurity}"
+
+    // Communication
+    const val springBootStarterMail = "org.springframework.boot:spring-boot-starter-mail:${Versions.springBoot}"
+
+    // Process
+    const val springBootStarterBatch = "org.springframework.boot:spring-boot-starter-batch:${Versions.springBoot}"
+    const val springBootBatchTest = "org.springframework.batch:spring-batch-test:${Versions.springBatch}"
+
+    // Swagger
+    const val springdocOpenapiDataRest = "org.springdoc:springdoc-openapi-data-rest:${Versions.springdocOpenapi}"
+    const val springdocOpenapiUI = "org.springdoc:springdoc-openapi-ui:${Versions.springdocOpenapi}"
+    const val springdocOpenapiKotlin = "org.springdoc:springdoc-openapi-kotlin:${Versions.springdocOpenapi}"
+
+    // Support
+    const val springBootStarterValidation =
+        "org.springframework.boot:spring-boot-starter-validation:${Versions.springBoot}"
+    const val springBootStarterHateoas = "org.springframework.boot:spring-boot-starter-hateoas:${Versions.springBoot}"
+    const val jacksonKotlin = "com.fasterxml.jackson.module:jackson-module-kotlin"
+    const val kotlinLogging = "io.github.microutils:kotlin-logging:${Versions.kotlinLogging}"
+
+    // Ops
+    const val springBootStarterActuator = "org.springframework.boot:spring-boot-starter-actuator:${Versions.springBoot}"
+
+    // Dev
+    const val springBootDevtools = "org.springframework.boot:spring-boot-devtools:${Versions.springBoot}"
+
+    // Test
+    const val springBootStarterTest = "org.springframework.boot:spring-boot-starter-test:${Versions.springBoot}"
+    const val kotestRunnerJunit5 = "io.kotest:kotest-runner-junit5:${Versions.kotest}"
+    const val kotestAssertionsCore = "io.kotest:kotest-assertions-core:${Versions.kotest}"
+    const val kotestProperty = "io.kotest:kotest-property:${Versions.kotest}"
+
+    // const val kotestExtensionsSpring = "io.kotest:kotest-extensions-spring:4.4.3"
+    const val kotestExtensionsSpring = "io.kotest.extensions:kotest-extensions-spring:${Versions.kotestExtensionSpring}"
+    const val mockk = "io.mockk:mockk:${Versions.mockk}"
+    const val ninjaSquadSpringMockk = "com.ninja-squad:springmockk:${Versions.springMockk}"
+}
 
 dependencies {
     // Language
-    implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlinReflectVersion")
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlinReflectVersion")
+    implementation(Libraries.kotlinReflect)
+    implementation(Libraries.kotlinStandardLibrary)
 
     // Server
-    implementation("org.springframework.boot:spring-boot-starter-web:$springBootVersion")
+    implementation(Libraries.springBootStarterWeb)
 
     // DB
-    implementation("org.springframework.boot:spring-boot-starter-data-jpa:$springBootVersion")
-//    implementation("org.liquibase:liquibase-core:$liquibaseVersion")
-    runtimeOnly("mysql:mysql-connector-java:$mysqlConnectorVersion")
-    runtimeOnly("com.h2database:h2:$h2DatabaseVersion")
+    implementation(Libraries.springBootStarterDataJpa)
+    implementation(Libraries.liquibase)
+    runtimeOnly(Libraries.mysqlConnector)
+    testImplementation(Libraries.h2Database)
 
     // Broker
-    implementation("org.springframework.boot:spring-boot-starter-amqp:$springBootVersion")
-    testImplementation("org.springframework.amqp:spring-rabbit-test:$springRabbitVersion")
+    implementation(Libraries.springBootStarterAMQP)
+    testImplementation(Libraries.springRabbitTest)
 
     // Security
-//    implementation("org.springframework.boot:spring-boot-starter-security:$springBootVersion")
-//    testImplementation("org.springframework.security:spring-security-test:$springSecurityVersion")
+    // implementation(Libraries.springBootStarterSecurity)
+    // testImplementation(Libraries.springSecurityTest)
 
     // Communication
-    implementation("org.springframework.boot:spring-boot-starter-mail:$springBootVersion")
+    implementation(Libraries.springBootStarterMail)
 
     // Process
-    implementation("org.springframework.boot:spring-boot-starter-batch:$springBootVersion")
-    testImplementation("org.springframework.batch:spring-batch-test:$springBatchVersion")
+    implementation(Libraries.springBootStarterBatch)
+    testImplementation(Libraries.springBootBatchTest)
 
     // Swagger
-    implementation("org.springdoc:springdoc-openapi-data-rest:$springdocOpenapiVersion")
-    implementation("org.springdoc:springdoc-openapi-ui:$springdocOpenapiVersion")
-    implementation("org.springdoc:springdoc-openapi-kotlin:$springdocOpenapiVersion")
+    implementation(Libraries.springdocOpenapiDataRest)
+    implementation(Libraries.springdocOpenapiUI)
+    implementation(Libraries.springdocOpenapiKotlin)
 
     // Support
-    implementation("org.springframework.boot:spring-boot-starter-validation:$springBootVersion")
-    implementation("org.springframework.boot:spring-boot-starter-hateoas:$springBootVersion")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
-    implementation("io.github.microutils:kotlin-logging:$kotlinLoggingVersion")
+    implementation(Libraries.springBootStarterValidation)
+    implementation(Libraries.springBootStarterHateoas)
+    implementation(Libraries.jacksonKotlin)
+    implementation(Libraries.kotlinLogging)
 
     // Ops
-    implementation("org.springframework.boot:spring-boot-starter-actuator:$springBootVersion")
+    implementation(Libraries.springBootStarterActuator)
 
     // Dev
-    developmentOnly("org.springframework.boot:spring-boot-devtools:$springBootVersion")
+    developmentOnly(Libraries.springBootDevtools)
 
     // Test
-    testImplementation("org.springframework.boot:spring-boot-starter-test:$springBootVersion")
-    testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
-    testImplementation("io.kotest:kotest-assertions-core:$kotestVersion")
-    testImplementation("io.kotest:kotest-extensions-spring:$kotestSpringExtensionVersion")
-    testImplementation("io.mockk:mockk:$mockkVersion")
-    testImplementation("com.ninja-squad:springmockk:$springMockkVersion")
+    testImplementation(Libraries.springBootStarterTest) {
+        exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
+        exclude(module = "mockito-core")
+    }
+    testImplementation(Libraries.kotestRunnerJunit5)
+    testImplementation(Libraries.kotestAssertionsCore)
+    testImplementation(Libraries.kotestProperty)
+    testImplementation(Libraries.kotestExtensionsSpring)
+    testImplementation(Libraries.mockk)
+    testImplementation(Libraries.ninjaSquadSpringMockk)
 }
 
 tasks.named<KotlinCompile>("compileKotlin") {
@@ -139,7 +206,7 @@ fun BootBuildImage.setupBuildProperty() {
     if (project.hasProperty("gradleDir")) bindingVolumes.add("$gradleDir:/home/cnb/.gradle:rw")
 
     bindings = bindingVolumes
-    builder = "paketobuildpacks/builder:$paketoBuildpacksBuilderVersion"
+    builder = "paketobuildpacks/builder:${Versions.paketoBuildpacksBuilder}"
 }
 
 fun BootBuildImage.setupImageProperty() {
@@ -186,8 +253,6 @@ fun BootBuildImage.setupDocker() {
 
 tasks.named<Test>("test") {
     useJUnitPlatform()
-
-    environment("SPRING_PROFILES_ACTIVE", "test")
 
     finalizedBy("jacocoTestReport")
 }

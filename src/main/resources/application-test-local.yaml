@@ -1,0 +1,10 @@
+application:
+  deploy:
+    environment: "test"
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    url: jdbc:mysql://${DATABASE_MYSQL_HOST}/${DATABASE_MYSQL_SCHEMA:bellsafehouse_test}?${DATABASE_MYSQL_OPTION:charset=utf8mb4,utf8&createDatabaseIfNotExist=true}
