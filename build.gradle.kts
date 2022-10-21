@@ -10,9 +10,9 @@ plugins {
 
     jacoco
 
-    kotlin("jvm") version "1.6.21"
-    kotlin("plugin.spring") version "1.6.21"
-    kotlin("plugin.jpa") version "1.6.21"
+    kotlin("jvm") version "1.7.20"
+    kotlin("plugin.spring") version "1.7.20"
+    kotlin("plugin.jpa") version "1.7.20"
 }
 
 jacoco {
@@ -28,7 +28,7 @@ repositories {
 }
 
 object Versions {
-    const val kotlinReflect = "1.7.10"
+    const val kotlin = "1.7.20"
     const val springBoot = "2.7.2"
     const val springSecurity = "5.7.2"
     const val springBatch = "4.3.6"
@@ -51,8 +51,8 @@ object Versions {
 
 object Libraries {
     // Language
-    const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlinReflect}"
-    const val kotlinStandardLibrary = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlinReflect}"
+    const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin}"
+    const val kotlinStandardLibrary = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin}"
 
     // Server
     const val springBootStarterWeb = "org.springframework.boot:spring-boot-starter-web:${Versions.springBoot}"
