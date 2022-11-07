@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # CONFIG
-BIND_PATH="${DOCKER_HOST_MOUNT_PATH_PREFIX}/home"
+BIND_PATH="${DOCKER_HOST_MOUNT_PATH_PREFIX}"
 
 ### 마운트 상태 확인
 echo "마운트 상태 확인 시작 (findmnt ${BIND_PATH})"
