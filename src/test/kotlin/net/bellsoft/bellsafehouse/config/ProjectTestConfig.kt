@@ -13,6 +13,7 @@ object ProjectTestConfig : AbstractProjectConfig() {
     override val failOnIgnoredTests = false
     override val isolationMode = IsolationMode.SingleInstance
     override val testNameRemoveWhitespace = true
+    override var displayFullTestPath: Boolean? = true
 
     override fun afterAll() {
         clearAllMocks()
