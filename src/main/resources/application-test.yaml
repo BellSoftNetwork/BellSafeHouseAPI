@@ -13,9 +13,13 @@ spring:
     database-platform: org.hibernate.dialect.H2Dialect
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:mem:testdb;MODE=MySQL;NON_KEYWORDS=user;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;
+    url: jdbc:h2:mem:testdb?useUnicode=true&characterEncoding=UTF-8;MODE=MySQL;NON_KEYWORDS=user;DB_CLOSE_DELAY=-1;DATABASE_TO_UPPER=FALSE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;
     username: sa
     password:
   sql:
     init:
       platform: h2
+
+security:
+  jwt:
+    signature-key: ${SECURITY_JWT_SIGNATURE_KEY:123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890}

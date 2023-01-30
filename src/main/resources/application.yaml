@@ -24,6 +24,7 @@ spring:
   sql:
     init:
       platform: mysql
+      encoding: utf-8
   test:
     database:
       replace: none
@@ -32,6 +33,16 @@ spring:
     database-change-log-table: database_changelog
     database-change-log-lock-table: database_changelog_lock
 
+security:
+  jwt:
+    signature-key: ${SECURITY_JWT_SIGNATURE_KEY}
+    refresh:
+      expiration-minute: ${SECURITY_JWT_REFRESH_EXPIRATION_MINUTE:43200}
+      auto-renew-minute: ${SECURITY_JWT_REFRESH_AUTO_RENEW_MINUTE:10080}
+    access:
+      expiration-minute: ${SECURITY_JWT_ACCESS_EXPIRATION_MINUTE:720}
+
 logging:
   level:
     liquibase: INFO
+    org.springframework.transaction.interceptor: TRACE

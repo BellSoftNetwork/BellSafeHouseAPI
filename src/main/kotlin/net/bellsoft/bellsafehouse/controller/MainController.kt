@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api")
 class MainController(
-    @Value("\${application.deploy.environment}") val applicationDeployEnvironment: String
+    @Value("\${application.deploy.environment}") val applicationDeployEnvironment: String,
 ) {
 
     @GetMapping("/")

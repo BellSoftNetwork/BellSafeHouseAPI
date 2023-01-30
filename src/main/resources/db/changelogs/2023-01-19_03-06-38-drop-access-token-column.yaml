@@ -1,0 +1,10 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1674065198344-4
+      author: Bell
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - dropColumn:
+            columnName: access_token
+            tableName: user_token
+

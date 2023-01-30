@@ -1,0 +1,84 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1670179155673-1
+      author: Tetrahedrite
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_user_token
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: created_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: updated_at
+                  type: DATETIME
+              - column:
+                  name: deleted_at
+                  type: DATETIME
+              - column:
+                  constraints:
+                    nullable: false
+                  name: user
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: refresh_token
+                  type: VARCHAR(255)
+              - column:
+                  constraints:
+                    nullable: false
+                  name: access_token
+                  type: VARCHAR(255)
+            tableName: user_token
+  - changeSet:
+      id: 1670179155673-2
+      author: Tetrahedrite
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: access_token
+            constraintName: uc_user_token_access_token
+            tableName: user_token
+  - changeSet:
+      id: 1670179155673-3
+      author: Tetrahedrite
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: id
+            constraintName: uc_user_token_id
+            tableName: user_token
+  - changeSet:
+      id: 1670179155673-4
+      author: Tetrahedrite
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: refresh_token
+            constraintName: uc_user_token_refresh_token
+            tableName: user_token
+  - changeSet:
+      id: 1670179155673-5
+      author: Tetrahedrite
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user
+            baseTableName: user_token
+            constraintName: FK_USER_TOKEN_ON_USER
+            referencedColumnNames: id
+            referencedTableName: user
+

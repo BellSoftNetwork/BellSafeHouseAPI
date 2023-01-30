@@ -1,0 +1,19 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1674901476999-6
+      author: Bell
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - dropColumn:
+            columnName: refresh_token
+            tableName: user_token
+  - changeSet:
+      id: 1674901476999-2
+      author: Bell
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - modifyDataType:
+            columnName: id
+            newDataType: UUID
+            tableName: user_token
+

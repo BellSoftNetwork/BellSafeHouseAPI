@@ -3,8 +3,7 @@ package net.bellsoft.bellsafehouse.config
 import io.kotest.core.config.AbstractProjectConfig
 import io.kotest.core.spec.IsolationMode
 import io.kotest.core.test.AssertionMode
-import io.kotest.extensions.spring.SpringTestExtension
-import io.kotest.extensions.spring.SpringTestLifecycleMode
+import io.kotest.extensions.spring.SpringExtension
 import io.mockk.clearAllMocks
 
 object ProjectTestConfig : AbstractProjectConfig() {
@@ -19,5 +18,5 @@ object ProjectTestConfig : AbstractProjectConfig() {
         clearAllMocks()
     }
 
-    override fun extensions() = listOf(SpringTestExtension(SpringTestLifecycleMode.Root))
+    override fun extensions() = listOf(SpringExtension)
 }
