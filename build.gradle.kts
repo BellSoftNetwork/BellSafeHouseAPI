@@ -5,7 +5,7 @@ import org.springframework.boot.gradle.tasks.run.BootRun
 plugins {
     id("org.springframework.boot") version "2.7.2"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    id("org.jlleitschuh.gradle.ktlint") version "10.3.0"
+    id("org.jlleitschuh.gradle.ktlint") version "11.1.0"
     id("org.liquibase.gradle") version "2.1.1"
 
     jacoco
@@ -28,144 +28,165 @@ repositories {
 }
 
 object Versions {
-    const val kotlin = "1.7.20"
-    const val springBoot = "2.7.2"
-    const val springSecurity = "5.7.2"
-    const val springBatch = "4.3.6"
-    const val springRabbit = "2.4.6"
-    const val liquibase = "4.9.1"
-    const val mysqlConnector = "8.0.29"
-    const val h2Database = "2.1.214"
-    const val springdocOpenapi = "1.6.9"
-    const val kotlinLogging = "2.1.23"
-    const val kotest = "5.4.1"
-    const val kotestExtensionSpring = "1.1.2"
-    const val mockk = "1.12.4"
-    const val springMockk = "3.1.1"
+    const val KOTLIN = "1.7.20"
+    const val SPRING_BOOT = "2.7.2"
+    const val SPRING_SECURITY = "5.7.3"
+    const val SPRING_BATCH = "4.3.6"
+    const val SPRING_RABBIT = "2.4.6"
+    const val LIQUIBASE = "4.9.1"
+    const val MYSQL_CONNECTOR = "8.0.29"
+    const val H2_DATABASE = "2.1.214"
+    const val SPRINGDOC_OPENAPI = "1.6.9"
+    const val KOTLIN_LOGGING = "2.1.23"
+    const val DATA_FAKER = "1.7.0"
+    const val KOTEST = "5.4.1"
+    const val KOTEST_EXTENSION_SPRING = "1.1.2"
+    const val MOCKK = "1.12.4"
+    const val SPRING_MOCKK = "3.1.1"
+    const val KOTLIN_FIXTURE = "1.2.0"
+    const val JSON_WEB_TOKEN_FOR_JAVA = "0.11.5"
+    const val ULID_CREATOR = "5.1.0"
 
     /** ### bootBuildImage Task 에서 사용하는 빌더 이미지 버전
      * 빌더 버전 업데이트 시 `bindings/VERSION.md` 파일 업데이트 필요
      */
-    const val paketoBuildpacksBuilder = "0.3.44-base"
+    const val PAKETO_BUILDPACKS_BUILDER = "0.3.44-base"
 }
 
 object Libraries {
     // Language
-    const val kotlinReflect = "org.jetbrains.kotlin:kotlin-reflect:${Versions.kotlin}"
-    const val kotlinStandardLibrary = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.kotlin}"
+    const val KOTLIN_REFLECT = "org.jetbrains.kotlin:kotlin-reflect:${Versions.KOTLIN}"
+    const val KOTLIN_STANDARD_LIBRARY = "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${Versions.KOTLIN}"
 
     // Server
-    const val springBootStarterWeb = "org.springframework.boot:spring-boot-starter-web:${Versions.springBoot}"
+    const val SPRING_BOOT_STARTER_WEB = "org.springframework.boot:spring-boot-starter-web:${Versions.SPRING_BOOT}"
 
     // DB
-    const val springBootStarterDataJpa = "org.springframework.boot:spring-boot-starter-data-jpa:${Versions.springBoot}"
-    const val liquibase = "org.liquibase:liquibase-core:${Versions.liquibase}"
+    const val SPRING_BOOT_STARTER_DATA_JPA =
+        "org.springframework.boot:spring-boot-starter-data-jpa:${Versions.SPRING_BOOT}"
+    const val LIQUIBASE = "org.liquibase:liquibase-core:${Versions.LIQUIBASE}"
 
-    const val mysqlConnector = "mysql:mysql-connector-java:${Versions.mysqlConnector}"
-    const val h2Database = "com.h2database:h2:${Versions.h2Database}"
+    const val MYSQL_CONNECTOR = "mysql:mysql-connector-java:${Versions.MYSQL_CONNECTOR}"
+    const val H2_DATABASE = "com.h2database:h2:${Versions.H2_DATABASE}"
 
     // Broker
-    const val springBootStarterAMQP = "org.springframework.boot:spring-boot-starter-amqp:${Versions.springBoot}"
-    const val springRabbitTest = "org.springframework.amqp:spring-rabbit-test:${Versions.springRabbit}"
+    const val SPRING_BOOT_STARTER_AMQP = "org.springframework.boot:spring-boot-starter-amqp:${Versions.SPRING_BOOT}"
+    const val SPRING_RABBIT_TEST = "org.springframework.amqp:spring-rabbit-test:${Versions.SPRING_RABBIT}"
 
     // Security
-    const val springBootStarterSecurity = "org.springframework.boot:spring-boot-starter-security:${Versions.springBoot}"
-    const val springSecurityTest = "org.springframework.security:spring-security-test:${Versions.springSecurity}"
+    const val SPRING_BOOT_STARTER_SECURITY =
+        "org.springframework.boot:spring-boot-starter-security:${Versions.SPRING_BOOT}"
+    const val SPRING_SECURITY_TEST = "org.springframework.security:spring-security-test:${Versions.SPRING_SECURITY}"
+    const val JSON_WEB_TOKEN_FOR_JAVA_API = "io.jsonwebtoken:jjwt-api:${Versions.JSON_WEB_TOKEN_FOR_JAVA}"
+    const val JSON_WEB_TOKEN_FOR_JAVA_IMPL = "io.jsonwebtoken:jjwt-impl:${Versions.JSON_WEB_TOKEN_FOR_JAVA}"
+    const val JSON_WEB_TOKEN_FOR_JAVA_JACKSON = "io.jsonwebtoken:jjwt-jackson:${Versions.JSON_WEB_TOKEN_FOR_JAVA}"
 
     // Communication
-    const val springBootStarterMail = "org.springframework.boot:spring-boot-starter-mail:${Versions.springBoot}"
+    const val SPRING_BOOT_STARTER_MAIL = "org.springframework.boot:spring-boot-starter-mail:${Versions.SPRING_BOOT}"
 
     // Process
-    const val springBootStarterBatch = "org.springframework.boot:spring-boot-starter-batch:${Versions.springBoot}"
-    const val springBootBatchTest = "org.springframework.batch:spring-batch-test:${Versions.springBatch}"
+    const val SPRING_BOOT_STARTER_BATCH = "org.springframework.boot:spring-boot-starter-batch:${Versions.SPRING_BOOT}"
+    const val SPRING_BOOT_BATCH_TEST = "org.springframework.batch:spring-batch-test:${Versions.SPRING_BATCH}"
 
     // Swagger
-    const val springdocOpenapiDataRest = "org.springdoc:springdoc-openapi-data-rest:${Versions.springdocOpenapi}"
-    const val springdocOpenapiUI = "org.springdoc:springdoc-openapi-ui:${Versions.springdocOpenapi}"
-    const val springdocOpenapiKotlin = "org.springdoc:springdoc-openapi-kotlin:${Versions.springdocOpenapi}"
+    const val SPRINGDOC_OPENAPI_DATA_REST = "org.springdoc:springdoc-openapi-data-rest:${Versions.SPRINGDOC_OPENAPI}"
+    const val SPRINGDOC_OPENAPI_UI = "org.springdoc:springdoc-openapi-ui:${Versions.SPRINGDOC_OPENAPI}"
+    const val SPRINGDOC_OPENAPI_KOTLIN = "org.springdoc:springdoc-openapi-kotlin:${Versions.SPRINGDOC_OPENAPI}"
 
     // Support
-    const val springBootStarterValidation =
-        "org.springframework.boot:spring-boot-starter-validation:${Versions.springBoot}"
-    const val springBootStarterHateoas = "org.springframework.boot:spring-boot-starter-hateoas:${Versions.springBoot}"
-    const val jacksonKotlin = "com.fasterxml.jackson.module:jackson-module-kotlin"
-    const val kotlinLogging = "io.github.microutils:kotlin-logging:${Versions.kotlinLogging}"
+    const val SPRING_BOOT_STARTER_VALIDATION =
+        "org.springframework.boot:spring-boot-starter-validation:${Versions.SPRING_BOOT}"
+    const val SPRING_BOOT_STARTER_HATEOAS =
+        "org.springframework.boot:spring-boot-starter-hateoas:${Versions.SPRING_BOOT}"
+    const val JACKSON_KOTLIN = "com.fasterxml.jackson.module:jackson-module-kotlin"
+    const val KOTLIN_LOGGING = "io.github.microutils:kotlin-logging:${Versions.KOTLIN_LOGGING}"
+    const val DATA_FAKER = "net.datafaker:datafaker:${Versions.DATA_FAKER}"
+    const val ULID_CREATOR = "com.github.f4b6a3:ulid-creator:${Versions.ULID_CREATOR}"
 
     // Ops
-    const val springBootStarterActuator = "org.springframework.boot:spring-boot-starter-actuator:${Versions.springBoot}"
+    const val SPRING_BOOT_STARTER_ACTUATOR =
+        "org.springframework.boot:spring-boot-starter-actuator:${Versions.SPRING_BOOT}"
 
     // Dev
-    const val springBootDevtools = "org.springframework.boot:spring-boot-devtools:${Versions.springBoot}"
+    const val SPRING_BOOT_DEVTOOLS = "org.springframework.boot:spring-boot-devtools:${Versions.SPRING_BOOT}"
 
     // Test
-    const val springBootStarterTest = "org.springframework.boot:spring-boot-starter-test:${Versions.springBoot}"
-    const val kotestRunnerJunit5 = "io.kotest:kotest-runner-junit5:${Versions.kotest}"
-    const val kotestAssertionsCore = "io.kotest:kotest-assertions-core:${Versions.kotest}"
-    const val kotestProperty = "io.kotest:kotest-property:${Versions.kotest}"
+    const val SPRING_BOOT_STARTER_TEST = "org.springframework.boot:spring-boot-starter-test:${Versions.SPRING_BOOT}"
+    const val KOTEST_RUNNER_JUNIT5 = "io.kotest:kotest-runner-junit5:${Versions.KOTEST}"
+    const val KOTEST_ASSERTIONS_CORE = "io.kotest:kotest-assertions-core:${Versions.KOTEST}"
+    const val KOTEST_PROPERTY = "io.kotest:kotest-property:${Versions.KOTEST}"
 
-    // const val kotestExtensionsSpring = "io.kotest:kotest-extensions-spring:4.4.3"
-    const val kotestExtensionsSpring = "io.kotest.extensions:kotest-extensions-spring:${Versions.kotestExtensionSpring}"
-    const val mockk = "io.mockk:mockk:${Versions.mockk}"
-    const val ninjaSquadSpringMockk = "com.ninja-squad:springmockk:${Versions.springMockk}"
+    const val KOTEST_EXTENSIONS_SPRING =
+        "io.kotest.extensions:kotest-extensions-spring:${Versions.KOTEST_EXTENSION_SPRING}"
+    const val MOCKK = "io.mockk:mockk:${Versions.MOCKK}"
+    const val NINJA_SQUAD_SPRING_MOCKK = "com.ninja-squad:springmockk:${Versions.SPRING_MOCKK}"
+    const val KOTLIN_FIXTURE_KOTEST = "com.appmattus.fixture:fixture-kotest:${Versions.KOTLIN_FIXTURE}"
+    const val KOTLIN_FIXTURE_GENEREX = "com.appmattus.fixture:fixture-generex:${Versions.KOTLIN_FIXTURE}"
 }
 
 dependencies {
     // Language
-    implementation(Libraries.kotlinReflect)
-    implementation(Libraries.kotlinStandardLibrary)
+    implementation(Libraries.KOTLIN_REFLECT)
+    implementation(Libraries.KOTLIN_STANDARD_LIBRARY)
 
     // Server
-    implementation(Libraries.springBootStarterWeb)
+    implementation(Libraries.SPRING_BOOT_STARTER_WEB)
 
     // DB
-    implementation(Libraries.springBootStarterDataJpa)
-    implementation(Libraries.liquibase)
-    runtimeOnly(Libraries.mysqlConnector)
-    testImplementation(Libraries.h2Database)
+    implementation(Libraries.SPRING_BOOT_STARTER_DATA_JPA)
+    implementation(Libraries.LIQUIBASE)
+    runtimeOnly(Libraries.MYSQL_CONNECTOR)
+    testImplementation(Libraries.H2_DATABASE)
 
     // Broker
-    implementation(Libraries.springBootStarterAMQP)
-    testImplementation(Libraries.springRabbitTest)
+    implementation(Libraries.SPRING_BOOT_STARTER_AMQP)
+    testImplementation(Libraries.SPRING_RABBIT_TEST)
 
     // Security
-    // implementation(Libraries.springBootStarterSecurity)
-    // testImplementation(Libraries.springSecurityTest)
+    implementation(Libraries.SPRING_BOOT_STARTER_SECURITY)
+    testImplementation(Libraries.SPRING_SECURITY_TEST)
+    implementation(Libraries.JSON_WEB_TOKEN_FOR_JAVA_API)
+    runtimeOnly(Libraries.JSON_WEB_TOKEN_FOR_JAVA_IMPL)
+    runtimeOnly(Libraries.JSON_WEB_TOKEN_FOR_JAVA_JACKSON)
 
     // Communication
-    implementation(Libraries.springBootStarterMail)
+    implementation(Libraries.SPRING_BOOT_STARTER_MAIL)
 
     // Process
-    implementation(Libraries.springBootStarterBatch)
-    testImplementation(Libraries.springBootBatchTest)
+    implementation(Libraries.SPRING_BOOT_STARTER_BATCH)
+    testImplementation(Libraries.SPRING_BOOT_BATCH_TEST)
 
     // Swagger
-    implementation(Libraries.springdocOpenapiDataRest)
-    implementation(Libraries.springdocOpenapiUI)
-    implementation(Libraries.springdocOpenapiKotlin)
+    implementation(Libraries.SPRINGDOC_OPENAPI_DATA_REST)
+    implementation(Libraries.SPRINGDOC_OPENAPI_UI)
+    implementation(Libraries.SPRINGDOC_OPENAPI_KOTLIN)
 
     // Support
-    implementation(Libraries.springBootStarterValidation)
-    implementation(Libraries.springBootStarterHateoas)
-    implementation(Libraries.jacksonKotlin)
-    implementation(Libraries.kotlinLogging)
+    implementation(Libraries.SPRING_BOOT_STARTER_VALIDATION)
+    implementation(Libraries.SPRING_BOOT_STARTER_HATEOAS)
+    implementation(Libraries.JACKSON_KOTLIN)
+    implementation(Libraries.KOTLIN_LOGGING)
+    implementation(Libraries.DATA_FAKER)
+    implementation(Libraries.ULID_CREATOR)
 
     // Ops
-    implementation(Libraries.springBootStarterActuator)
+    implementation(Libraries.SPRING_BOOT_STARTER_ACTUATOR)
 
     // Dev
-    developmentOnly(Libraries.springBootDevtools)
+    developmentOnly(Libraries.SPRING_BOOT_DEVTOOLS)
 
     // Test
-    testImplementation(Libraries.springBootStarterTest) {
+    testImplementation(Libraries.SPRING_BOOT_STARTER_TEST) {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
         exclude(module = "mockito-core")
     }
-    testImplementation(Libraries.kotestRunnerJunit5)
-    testImplementation(Libraries.kotestAssertionsCore)
-    testImplementation(Libraries.kotestProperty)
-    testImplementation(Libraries.kotestExtensionsSpring)
-    testImplementation(Libraries.mockk)
-    testImplementation(Libraries.ninjaSquadSpringMockk)
+    testImplementation(Libraries.KOTEST_RUNNER_JUNIT5)
+    testImplementation(Libraries.KOTEST_ASSERTIONS_CORE)
+    testImplementation(Libraries.KOTEST_PROPERTY)
+    testImplementation(Libraries.KOTEST_EXTENSIONS_SPRING)
+    testImplementation(Libraries.MOCKK)
+    testImplementation(Libraries.NINJA_SQUAD_SPRING_MOCKK)
+    testImplementation(Libraries.KOTLIN_FIXTURE_KOTEST)
 }
 
 tasks.named<KotlinCompile>("compileKotlin") {
@@ -206,7 +227,7 @@ fun BootBuildImage.setupBuildProperty() {
     if (project.hasProperty("gradleDir")) bindingVolumes.add("$gradleDir:/home/cnb/.gradle:rw")
 
     bindings = bindingVolumes
-    builder = "paketobuildpacks/builder:${Versions.paketoBuildpacksBuilder}"
+    builder = "paketobuildpacks/builder:${Versions.PAKETO_BUILDPACKS_BUILDER}"
 }
 
 fun BootBuildImage.setupImageProperty() {
@@ -251,15 +272,27 @@ fun BootBuildImage.setupDocker() {
     }
 }
 
+ktlint {
+    version.set("0.48.1")
+    verbose.set(true)
+    relative.set(true)
+    outputColorName.set("RED")
+    enableExperimentalRules.set(true)
+    disabledRules.set(setOf("multiline-if-else"))
+}
+
 tasks.named<Test>("test") {
     useJUnitPlatform()
 
+    jvmArgs(
+        "--add-opens",
+        "java.base/java.time=ALL-UNNAMED",
+        "--add-opens",
+        "java.base/java.lang.reflect=ALL-UNNAMED",
+    )
+
     finalizedBy("jacocoTestReport")
 }
-
-val jacocoDefaultExcludeFiles = listOf(
-    "net.bellsoft.bellsafehouse.BellSafeHouseApplicationKt"
-)
 
 tasks.jacocoTestReport {
     reports {
@@ -267,45 +300,72 @@ tasks.jacocoTestReport {
         xml.outputLocation.set(file("$buildDir/jacoco/jacoco.xml"))
     }
 
-    finalizedBy("jacocoTestCoverageVerification") // 활성화시 violationRules 통과 실패할경우 테스트도 실패처리 됨
+    finalizedBy("jacocoTestCoverageVerification") // NOTE: 활성화시 violationRules 통과 실패할경우 테스트도 실패처리 됨
+}
+
+private object JacocoViolationRuleSet {
+    object Default {
+        private val QUERY_DSL_DOMAINS = ('A'..'Z').map { "*.Q$it" }
+
+        val EXCLUDE_FILES = listOf(
+            "*ApplicationKt",
+            "*.config.*Config",
+            "*.exception.*Exception",
+            "*Dto",
+            "*DTO",
+        ) + QUERY_DSL_DOMAINS
+    }
+
+    object Business {
+        val INCLUDE_FILES = listOf(
+            "*.domain.*",
+            "*.service.*",
+        )
+    }
 }
 
 tasks.jacocoTestCoverageVerification {
     violationRules {
         rule {
-            // element 가 없으면 프로젝트의 전체 파일을 합친 값 기준
+            // NOTE: element 가 없으면 프로젝트의 전체 파일을 합친 값 기준
 
             limit {
-                // counter 를 지정하지 않으면 default 는 INSTRUCTION
-                // value 를 지정하지 않으면 default 는 COVEREDRATIO
+                // NOTE: counter 를 지정하지 않으면 default 는 INSTRUCTION
+                // NOTE: value 를 지정하지 않으면 default 는 COVEREDRATIO
                 minimum = "0.30".toBigDecimal()
             }
         }
 
         rule {
             enabled = true
-            element = "CLASS" // class 단위로 rule check
-            excludes = jacocoDefaultExcludeFiles
+            element = "CLASS"
 
-            // 브랜치 커버리지 최소 90% 만족
+            // NOTE: 빈 줄을 제외한 코드의 라인수를 최대 200라인으로 제한
+            limit {
+                counter = "LINE"
+                value = "TOTALCOUNT"
+                maximum = "200".toBigDecimal()
+            }
+        }
+
+        rule {
+            enabled = true
+            element = "CLASS"
+            includes = JacocoViolationRuleSet.Business.INCLUDE_FILES
+            excludes = JacocoViolationRuleSet.Default.EXCLUDE_FILES
+
+            // NOTE: 브랜치 커버리지 최소 90% 만족
             limit {
                 counter = "BRANCH"
                 value = "COVEREDRATIO"
                 minimum = "0.90".toBigDecimal()
             }
 
-            // 라인 커버리지 최소 80% 만족
+            // NOTE: 라인 커버리지 최소 80% 만족
             limit {
                 counter = "LINE"
                 value = "COVEREDRATIO"
                 minimum = "0.80".toBigDecimal()
-            }
-
-            // 빈 줄을 제외한 코드의 라인수를 최대 200라인으로 제한
-            limit {
-                counter = "LINE"
-                value = "TOTALCOUNT"
-                maximum = "200".toBigDecimal()
             }
         }
     }
