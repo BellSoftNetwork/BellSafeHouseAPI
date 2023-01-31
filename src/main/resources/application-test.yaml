@@ -1,12 +1,13 @@
-application:
-  deploy:
-    environment: "test"
-
+spring:
+  config:
+    import:
+      - classpath:config/common/test.yaml
+      - classpath:config/common/optional-jwt.yaml
+      - classpath:config/common/jpa-detail-logging.yaml
+---
 spring:
   jpa:
     database: h2
-    hibernate:
-      ddl-auto: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
@@ -19,7 +20,3 @@ spring:
   sql:
     init:
       platform: h2
-
-security:
-  jwt:
-    signature-key: ${SECURITY_JWT_SIGNATURE_KEY:123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890}

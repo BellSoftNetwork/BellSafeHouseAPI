@@ -45,4 +45,7 @@ security:
 logging:
   level:
     liquibase: INFO
-    org.springframework.transaction.interceptor: TRACE
+    org:
+      springframework:
+        transaction:
+          interceptor: TRACE
