@@ -9,8 +9,6 @@ class UserTokenFixture {
     enum class Feature : FixtureFeature
 
     companion object {
-        private val UNIQUE_SEQUENCE_ITERATOR = (0..Int.MAX_VALUE).iterator()
-
         internal val BASE_CONFIGURATION: ConfigurationBuilder.() -> Unit = {
             property(UserToken::user) { baseFixture() }
         }

@@ -3,16 +3,20 @@ import org.springframework.boot.gradle.tasks.bundling.BootBuildImage
 import org.springframework.boot.gradle.tasks.run.BootRun
 
 plugins {
+    val kotlinVersion = "1.7.20"
+
     id("org.springframework.boot") version "2.7.2"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
     id("org.jlleitschuh.gradle.ktlint") version "11.1.0"
     id("org.liquibase.gradle") version "2.1.1"
 
-    jacoco
+    kotlin("jvm") version kotlinVersion
+    kotlin("plugin.spring") version kotlinVersion
+    kotlin("plugin.jpa") version kotlinVersion
+    kotlin("kapt") version kotlinVersion
 
-    kotlin("jvm") version "1.7.20"
-    kotlin("plugin.spring") version "1.7.20"
-    kotlin("plugin.jpa") version "1.7.20"
+    jacoco
+    idea
 }
 
 jacoco {
@@ -30,6 +34,7 @@ repositories {
 object Versions {
     const val KOTLIN = "1.7.20"
     const val SPRING_BOOT = "2.7.2"
+    const val QUERYDSL = "5.0.0"
     const val SPRING_SECURITY = "5.7.3"
     const val SPRING_BATCH = "4.3.6"
     const val SPRING_RABBIT = "2.4.6"
@@ -64,6 +69,8 @@ object Libraries {
     // DB
     const val SPRING_BOOT_STARTER_DATA_JPA =
         "org.springframework.boot:spring-boot-starter-data-jpa:${Versions.SPRING_BOOT}"
+    const val QUERYDSL = "com.querydsl:querydsl-jpa:${Versions.QUERYDSL}"
+    const val QUERYDSL_APT = "com.querydsl:querydsl-apt:${Versions.QUERYDSL}:jpa"
     const val LIQUIBASE = "org.liquibase:liquibase-core:${Versions.LIQUIBASE}"
 
     const val MYSQL_CONNECTOR = "mysql:mysql-connector-java:${Versions.MYSQL_CONNECTOR}"
@@ -134,6 +141,8 @@ dependencies {
 
     // DB
     implementation(Libraries.SPRING_BOOT_STARTER_DATA_JPA)
+    implementation(Libraries.QUERYDSL)
+    kapt(Libraries.QUERYDSL_APT)
     implementation(Libraries.LIQUIBASE)
     runtimeOnly(Libraries.MYSQL_CONNECTOR)
     testImplementation(Libraries.H2_DATABASE)
@@ -245,7 +254,6 @@ fun BootBuildImage.setupDocker() {
     val isDockerTlsVerify: String by project
     val dockerCertPath: String by project
 
-    val proxyRegistryUrl: String by project
     val projectRegistryUrl: String by project
     val registryUser: String by project
     val registryPassword: String by project
@@ -255,13 +263,6 @@ fun BootBuildImage.setupDocker() {
         if (project.hasProperty("dockerHost")) host = dockerHost
         if (project.hasProperty("isDockerTlsVerify")) isTlsVerify = isDockerTlsVerify.toBoolean()
         if (project.hasProperty("dockerCertPath")) certPath = dockerCertPath
-
-        // builderRegistry {
-        //     if (project.hasProperty("proxyRegistryUrl")) url = proxyRegistryUrl
-        //     if (project.hasProperty("registryUser")) username = registryUser
-        //     if (project.hasProperty("registryPassword")) password = registryPassword
-        //     if (project.hasProperty("registryEmail")) email = registryEmail
-        // }
 
         publishRegistry {
             if (project.hasProperty("projectRegistryUrl")) url = projectRegistryUrl
@@ -305,7 +306,7 @@ tasks.jacocoTestReport {
 
 private object JacocoViolationRuleSet {
     object Default {
-        private val QUERY_DSL_DOMAINS = ('A'..'Z').map { "*.Q$it" }
+        private val QUERY_DSL_DOMAINS = ('A'..'Z').map { "*.Q$it*" }
 
         val EXCLUDE_FILES = listOf(
             "*ApplicationKt",

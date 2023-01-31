@@ -1,14 +1,10 @@
-application:
-  deploy:
-    environment: "test"
-
 spring:
-  jpa:
-    hibernate:
-      ddl-auto: validate
+  config:
+    import:
+      - classpath:config/common/test.yaml
+      - classpath:config/common/optional-jwt.yaml
+      - classpath:config/common/jpa-detail-logging.yaml
+---
+spring:
   datasource:
     url: jdbc:mysql://${DATABASE_MYSQL_HOST}/${DATABASE_MYSQL_SCHEMA:bellsafehouse_test}?${DATABASE_MYSQL_OPTION:charset=utf8mb4,utf8&createDatabaseIfNotExist=true}
-
-security:
-  jwt:
-    signature-key: ${SECURITY_JWT_SIGNATURE_KEY:123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890}
