@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.http.converter.HttpMessageNotReadableException
 import org.springframework.security.core.userdetails.UsernameNotFoundException
+import org.springframework.validation.BindException
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
@@ -24,16 +25,25 @@ class ExceptionController {
     protected fun handleMethodArgumentNotValidException(
         ex: MethodArgumentNotValidException,
     ): ResponseEntity<ErrorResponse> {
-        val errors = ex.fieldErrors.map {
+        return handleBindException(ex)
+    }
+
+    @ApiResponse(responseCode = "400", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    @ExceptionHandler(BindException::class)
+    protected fun handleBindException(ex: BindException): ResponseEntity<ErrorResponse> {
+        val fieldErrors = ex.fieldErrors.map {
             "'${it.field}'은(는) ${it.defaultMessage} (요청 값: ${it.rejectedValue})"
         }
+
+        val globalErrors = ex.globalErrors.map { it.defaultMessage.toString() }
 
         return ResponseEntity
             .badRequest()
             .body(
                 ErrorResponse(
                     message = "잘못된 요청",
-                    errors = errors,
+                    errors = globalErrors,
+                    fieldErrors = fieldErrors,
                 ),
             )
     }
