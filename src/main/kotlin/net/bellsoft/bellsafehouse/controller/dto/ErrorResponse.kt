@@ -7,6 +7,9 @@ data class ErrorResponse(
     @Schema(description = "에러 메시지")
     val message: String,
 
-    @Schema(description = "필드 에러")
+    @Schema(description = "에러")
     val errors: List<String>? = null,
+
+    @Schema(description = "필드 에러")
+    val fieldErrors: List<String>? = null,
 )

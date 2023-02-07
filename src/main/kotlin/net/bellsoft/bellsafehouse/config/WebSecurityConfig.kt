@@ -24,6 +24,7 @@ class WebSecurityConfig(
         return http.run {
             authorizeRequests {
                 it.antMatchers("/api/*/auth/**").permitAll()
+                it.antMatchers("/api/*/check/**").permitAll()
                 it.antMatchers("/api/docs/**").permitAll()
                 it.anyRequest().authenticated()
             }
