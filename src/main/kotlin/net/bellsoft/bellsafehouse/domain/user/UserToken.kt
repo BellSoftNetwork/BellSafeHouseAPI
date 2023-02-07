@@ -19,7 +19,7 @@ class UserToken(
     val user: User,
 ) : BaseTime() {
     @Id
-    @Column(name = "id", nullable = false, unique = true, updatable = false)
+    @Column(name = "id", nullable = false, unique = true, updatable = false, columnDefinition = "BINARY(16)")
     val id: UUID = UlidCreator.getMonotonicUlid().toUuid()
 
     override fun toString(): String {

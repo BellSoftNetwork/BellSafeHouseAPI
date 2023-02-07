@@ -1,0 +1,11 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1675783313365-1
+      author: Tetrahedrite
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - modifyDataType:
+            columnName: id
+            newDataType: BINARY(16)
+            tableName: user_token
+
