@@ -1,11 +1,11 @@
 package net.bellsoft.bellsafehouse.controller.v1.auth.dto
 
 import io.swagger.v3.oas.annotations.media.Schema
+import jakarta.validation.constraints.Email
+import jakarta.validation.constraints.Size
 import net.bellsoft.bellsafehouse.domain.user.User
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.time.LocalDateTime
-import javax.validation.constraints.Email
-import javax.validation.constraints.Size
 
 @Schema(description = "회원가입 요청 정보")
 data class UserRegistrationRequest(

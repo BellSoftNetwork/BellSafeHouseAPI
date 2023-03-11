@@ -1,5 +1,8 @@
 package net.bellsoft.bellsafehouse.filter
 
+import jakarta.servlet.FilterChain
+import jakarta.servlet.http.HttpServletRequest
+import jakarta.servlet.http.HttpServletResponse
 import net.bellsoft.bellsafehouse.component.UserTokenProvider
 import net.bellsoft.bellsafehouse.component.jwt.BearerToken
 import net.bellsoft.bellsafehouse.component.jwt.JwtSupport
@@ -11,9 +14,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.filter.OncePerRequestFilter
-import javax.servlet.FilterChain
-import javax.servlet.http.HttpServletRequest
-import javax.servlet.http.HttpServletResponse
 
 class JwtFilter(
     private val jwtSupport: JwtSupport,

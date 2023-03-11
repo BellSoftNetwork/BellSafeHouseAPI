@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController
 
 @RestController
 @SecurityRequirement(name = "bearerAuth")
-@RequestMapping("/api")
+@RequestMapping("/")
 class MainController(
     @Value("\${application.deploy.environment}") val applicationDeployEnvironment: String,
 ) {

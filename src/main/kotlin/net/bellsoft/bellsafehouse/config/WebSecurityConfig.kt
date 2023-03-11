@@ -22,10 +22,10 @@ class WebSecurityConfig(
     @Bean
     fun filterChain(http: HttpSecurity): SecurityFilterChain {
         return http.run {
-            authorizeRequests {
-                it.antMatchers("/api/*/auth/**").permitAll()
-                it.antMatchers("/api/*/check/**").permitAll()
-                it.antMatchers("/api/docs/**").permitAll()
+            authorizeHttpRequests {
+                it.requestMatchers("/*/auth/**").permitAll()
+                it.requestMatchers("/*/check/**").permitAll()
+                it.requestMatchers("/docs/**").permitAll()
                 it.anyRequest().authenticated()
             }
             addFilterAfter(

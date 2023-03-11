@@ -3,6 +3,7 @@ package net.bellsoft.bellsafehouse.controller.v1.check
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.responses.ApiResponse
 import io.swagger.v3.oas.annotations.tags.Tag
+import jakarta.validation.Valid
 import net.bellsoft.bellsafehouse.controller.v1.check.dto.UserCheckRequest
 import net.bellsoft.bellsafehouse.controller.v1.check.dto.UserCheckResponse
 import net.bellsoft.bellsafehouse.service.CheckService
@@ -11,12 +12,11 @@ import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
-import javax.validation.Valid
 
 @Tag(name = "유저 확인", description = "유저 확인 API")
 @RestController
 @Validated
-@RequestMapping("/api/v1/check")
+@RequestMapping("/v1/check")
 class CheckController(
     private val checkService: CheckService,
 ) {
