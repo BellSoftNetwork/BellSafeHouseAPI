@@ -1,7 +1,7 @@
 package net.bellsoft.bellsafehouse.controller.v1.auth.dto
 
 import io.swagger.v3.oas.annotations.media.Schema
-import javax.validation.constraints.Size
+import jakarta.validation.constraints.Size
 
 @Schema(description = "로그인 요청 정보")
 data class UserLoginRequest(

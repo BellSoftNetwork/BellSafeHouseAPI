@@ -11,6 +11,7 @@ import io.kotest.property.arbitrary.string
 import io.kotest.property.checkAll
 import io.kotest.property.exhaustive.azstring
 import io.mockk.every
+import jakarta.servlet.http.Cookie
 import net.bellsoft.bellsafehouse.component.jwt.JwtSupport
 import net.bellsoft.bellsafehouse.controller.v1.auth.dto.UserLoginRequest
 import net.bellsoft.bellsafehouse.controller.v1.auth.dto.UserRegistrationRequest
@@ -30,7 +31,6 @@ import org.springframework.test.web.servlet.post
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import org.springframework.web.context.WebApplicationContext
 import java.util.Locale
-import javax.servlet.http.Cookie
 
 @WebMvcTest(AuthController::class)
 @WithAnonymousUser
@@ -67,7 +67,7 @@ internal class AuthControllerTest(
                     Then("201 Created 가 반환된다") {
                         val userRegistrationJson = objectMapper.writeValueAsString(userRegistrationRequest)
 
-                        mockMvc.post("/api/v1/auth/register") {
+                        mockMvc.post("/v1/auth/register") {
                             locale(Locale.KOREA)
                             contentType = MediaType.APPLICATION_JSON
                             accept = MediaType.APPLICATION_JSON
@@ -97,7 +97,7 @@ internal class AuthControllerTest(
                     Then("400 Bad Request 가 반환된다") {
                         val userRegistrationJson = objectMapper.writeValueAsString(userRegistrationRequest)
 
-                        mockMvc.post("/api/v1/auth/register") {
+                        mockMvc.post("/v1/auth/register") {
                             locale(Locale.KOREA)
                             contentType = MediaType.APPLICATION_JSON
                             accept = MediaType.APPLICATION_JSON
@@ -111,7 +111,7 @@ internal class AuthControllerTest(
 
             When("회원 가입에 필요한 데이터를 채우지 않고 가입 요청 시") {
                 Then("400 Bad Request 가 반환된다") {
-                    mockMvc.post("/api/v1/auth/register") {
+                    mockMvc.post("/v1/auth/register") {
                         locale(Locale.KOREA)
                         contentType = MediaType.APPLICATION_JSON
                         accept = MediaType.APPLICATION_JSON
@@ -132,7 +132,7 @@ internal class AuthControllerTest(
                 Then("422 Unprocessable Entity 가 반환된다") {
                     val userRegistrationJson = objectMapper.writeValueAsString(duplicatedUserRequest)
 
-                    mockMvc.post("/api/v1/auth/register") {
+                    mockMvc.post("/v1/auth/register") {
                         locale(Locale.KOREA)
                         contentType = MediaType.APPLICATION_JSON
                         accept = MediaType.APPLICATION_JSON
@@ -154,7 +154,7 @@ internal class AuthControllerTest(
 
                     val userLogin = objectMapper.writeValueAsString(userLoginRequest)
 
-                    mockMvc.post("/api/v1/auth/refresh") {
+                    mockMvc.post("/v1/auth/refresh") {
                         locale(Locale.KOREA)
                         contentType = MediaType.APPLICATION_JSON
                         accept = MediaType.APPLICATION_JSON
@@ -177,7 +177,7 @@ internal class AuthControllerTest(
 
                     val userLogin = objectMapper.writeValueAsString(userLoginRequest)
 
-                    mockMvc.post("/api/v1/auth/refresh") {
+                    mockMvc.post("/v1/auth/refresh") {
                         locale(Locale.KOREA)
                         contentType = MediaType.APPLICATION_JSON
                         accept = MediaType.APPLICATION_JSON
@@ -190,7 +190,7 @@ internal class AuthControllerTest(
 
             When("Refresh Token 값이 쿠키에 없을 때") {
                 Then("401 Unauthorized 가 반환된다") {
-                    mockMvc.post("/api/v1/auth/access") {
+                    mockMvc.post("/v1/auth/access") {
                         locale(Locale.KOREA)
                         contentType = MediaType.APPLICATION_JSON
                         accept = MediaType.APPLICATION_JSON
@@ -208,7 +208,7 @@ internal class AuthControllerTest(
                         authService.reissueAccessToken(invalidRefreshToken)
                     } throws InvalidTokenException("유효한 인증 토큰 형식이 아님")
 
-                    mockMvc.post("/api/v1/auth/access") {
+                    mockMvc.post("/v1/auth/access") {
                         locale(Locale.KOREA)
                         contentType = MediaType.APPLICATION_JSON
                         accept = MediaType.APPLICATION_JSON
@@ -226,7 +226,7 @@ internal class AuthControllerTest(
 
                     every { authService.reissueAccessToken(validRefreshToken) } returns validAccessToken
 
-                    mockMvc.post("/api/v1/auth/access") {
+                    mockMvc.post("/v1/auth/access") {
                         locale(Locale.KOREA)
                         contentType = MediaType.APPLICATION_JSON
                         accept = MediaType.APPLICATION_JSON

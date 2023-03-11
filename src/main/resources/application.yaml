@@ -5,9 +5,13 @@ application:
 # Swagger
 springdoc:
   api-docs:
-    path: "/api/docs/schema"
+    path: "/docs/schema"
   swagger-ui:
-    path: "/api/docs/swagger-ui"
+    path: "/docs/swagger-ui"
+
+server:
+  servlet:
+    context-path: "/api"
 
 spring:
   datasource:

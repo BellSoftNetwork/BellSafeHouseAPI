@@ -8,6 +8,7 @@ import io.jsonwebtoken.MalformedJwtException
 import io.jsonwebtoken.UnsupportedJwtException
 import io.jsonwebtoken.security.Keys
 import io.jsonwebtoken.security.SignatureException
+import jakarta.servlet.http.Cookie
 import net.bellsoft.bellsafehouse.component.jwt.dto.AccessTokenDto
 import net.bellsoft.bellsafehouse.component.jwt.dto.RefreshTokenDto
 import net.bellsoft.bellsafehouse.exception.InvalidTokenException
@@ -17,7 +18,6 @@ import java.time.Instant
 import java.time.temporal.ChronoUnit
 import java.util.Date
 import java.util.UUID
-import javax.servlet.http.Cookie
 
 @Component
 class JwtSupport(

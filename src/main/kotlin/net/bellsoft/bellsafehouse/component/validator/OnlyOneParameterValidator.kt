@@ -1,10 +1,10 @@
 package net.bellsoft.bellsafehouse.component.validator
 
+import jakarta.validation.ConstraintValidator
+import jakarta.validation.ConstraintValidatorContext
 import net.bellsoft.bellsafehouse.annotation.validator.OnlyOneField
 import org.springframework.expression.spel.standard.SpelExpressionParser
 import java.util.Objects
-import javax.validation.ConstraintValidator
-import javax.validation.ConstraintValidatorContext
 
 class OnlyOneParameterValidator(
     private var fields: Array<out String>,

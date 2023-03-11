@@ -3,12 +3,12 @@ package net.bellsoft.bellsafehouse.controller.v1.check.dto
 import com.fasterxml.jackson.annotation.JsonInclude
 import io.swagger.v3.oas.annotations.Parameter
 import io.swagger.v3.oas.annotations.media.Schema
+import jakarta.validation.constraints.Email
+import jakarta.validation.constraints.Size
 import net.bellsoft.bellsafehouse.annotation.validator.OnlyOneField
 import net.bellsoft.bellsafehouse.exception.UnprocessableEntityException
-import org.springdoc.api.annotations.ParameterObject
+import org.springdoc.core.annotations.ParameterObject
 import org.springframework.lang.Nullable
-import javax.validation.constraints.Email
-import javax.validation.constraints.Size
 import kotlin.reflect.KProperty1
 import kotlin.reflect.full.declaredMemberProperties
 import kotlin.reflect.jvm.javaField

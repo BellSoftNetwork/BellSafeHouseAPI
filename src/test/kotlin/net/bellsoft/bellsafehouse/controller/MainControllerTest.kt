@@ -19,7 +19,7 @@ internal class MainControllerTest(
         Given("로그인 한 상황에서") {
             When("displayIndex 요청 시") {
                 Then("'Bell Safe House Index API' 반환") {
-                    mockMvc.get("/api/").andExpect {
+                    mockMvc.get("/").andExpect {
                         status { isOk() }
                         content { string("Bell Safe House Index API ($applicationDeployEnvironment)") }
                     }
@@ -28,7 +28,7 @@ internal class MainControllerTest(
 
             When("displayEnvironment 요청 시") {
                 Then("환경 정보 반환") {
-                    mockMvc.get("/api/environment").andExpect {
+                    mockMvc.get("/environment").andExpect {
                         status { isOk() }
                         content { string(applicationDeployEnvironment) }
                     }

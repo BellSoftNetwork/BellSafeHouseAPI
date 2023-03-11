@@ -5,8 +5,8 @@ import org.springframework.boot.gradle.tasks.run.BootRun
 plugins {
     val kotlinVersion = "1.7.20"
 
-    id("org.springframework.boot") version "2.7.2"
-    id("io.spring.dependency-management") version "1.0.11.RELEASE"
+    id("org.springframework.boot") version "3.0.4"
+    id("io.spring.dependency-management") version "1.1.0"
     id("org.jlleitschuh.gradle.ktlint") version "11.1.0"
     id("org.liquibase.gradle") version "2.1.1"
 
@@ -33,21 +33,21 @@ repositories {
 
 object Versions {
     const val KOTLIN = "1.7.20"
-    const val SPRING_BOOT = "2.7.2"
+    const val SPRING_BOOT = "3.0.4"
     const val QUERYDSL = "5.0.0"
-    const val SPRING_SECURITY = "5.7.3"
-    const val SPRING_BATCH = "4.3.6"
-    const val SPRING_RABBIT = "2.4.6"
-    const val LIQUIBASE = "4.9.1"
+    const val SPRING_SECURITY = "6.0.2"
+    const val SPRING_BATCH = "5.0.1"
+    const val SPRING_RABBIT = "3.0.2"
+    const val LIQUIBASE = "4.20.0"
     const val MYSQL_CONNECTOR = "8.0.29"
     const val H2_DATABASE = "2.1.214"
-    const val SPRINGDOC_OPENAPI = "1.6.9"
+    const val SPRINGDOC_OPENAPI = "2.0.2"
     const val KOTLIN_LOGGING = "2.1.23"
     const val DATA_FAKER = "1.7.0"
     const val KOTEST = "5.4.1"
     const val KOTEST_EXTENSION_SPRING = "1.1.2"
-    const val MOCKK = "1.12.4"
-    const val SPRING_MOCKK = "3.1.1"
+    const val MOCKK = "1.13.4"
+    const val SPRING_MOCKK = "4.0.1"
     const val KOTLIN_FIXTURE = "1.2.0"
     const val JSON_WEB_TOKEN_FOR_JAVA = "0.11.5"
     const val ULID_CREATOR = "5.1.0"
@@ -69,8 +69,8 @@ object Libraries {
     // DB
     const val SPRING_BOOT_STARTER_DATA_JPA =
         "org.springframework.boot:spring-boot-starter-data-jpa:${Versions.SPRING_BOOT}"
-    const val QUERYDSL = "com.querydsl:querydsl-jpa:${Versions.QUERYDSL}"
-    const val QUERYDSL_APT = "com.querydsl:querydsl-apt:${Versions.QUERYDSL}:jpa"
+    const val QUERYDSL = "com.querydsl:querydsl-jpa:${Versions.QUERYDSL}:jakarta"
+    const val QUERYDSL_APT = "com.querydsl:querydsl-apt:${Versions.QUERYDSL}:jakarta"
     const val LIQUIBASE = "org.liquibase:liquibase-core:${Versions.LIQUIBASE}"
 
     const val MYSQL_CONNECTOR = "mysql:mysql-connector-java:${Versions.MYSQL_CONNECTOR}"
@@ -96,9 +96,8 @@ object Libraries {
     const val SPRING_BOOT_BATCH_TEST = "org.springframework.batch:spring-batch-test:${Versions.SPRING_BATCH}"
 
     // Swagger
-    const val SPRINGDOC_OPENAPI_DATA_REST = "org.springdoc:springdoc-openapi-data-rest:${Versions.SPRINGDOC_OPENAPI}"
-    const val SPRINGDOC_OPENAPI_UI = "org.springdoc:springdoc-openapi-ui:${Versions.SPRINGDOC_OPENAPI}"
-    const val SPRINGDOC_OPENAPI_KOTLIN = "org.springdoc:springdoc-openapi-kotlin:${Versions.SPRINGDOC_OPENAPI}"
+    const val SPRINGDOC_OPENAPI_STARTER_WEB_MVC =
+        "org.springdoc:springdoc-openapi-starter-webmvc-ui:${Versions.SPRINGDOC_OPENAPI}"
 
     // Support
     const val SPRING_BOOT_STARTER_VALIDATION =
@@ -166,9 +165,7 @@ dependencies {
     testImplementation(Libraries.SPRING_BOOT_BATCH_TEST)
 
     // Swagger
-    implementation(Libraries.SPRINGDOC_OPENAPI_DATA_REST)
-    implementation(Libraries.SPRINGDOC_OPENAPI_UI)
-    implementation(Libraries.SPRINGDOC_OPENAPI_KOTLIN)
+    implementation(Libraries.SPRINGDOC_OPENAPI_STARTER_WEB_MVC)
 
     // Support
     implementation(Libraries.SPRING_BOOT_STARTER_VALIDATION)
@@ -216,59 +213,67 @@ fun BootRun.setupEnvironment() {
 
 // https://docs.spring.io/spring-boot/docs/current/gradle-plugin/reference/htmlsingle/#build-image
 tasks.named<BootBuildImage>("bootBuildImage") {
-    setupEnvironment()
-    setupBuildProperty()
-    setupImageProperty()
-    setupDocker()
+    setupEnvironment(this)
+    setupBuildProperty(this)
+    setupImageProperty(this)
+    setupDocker(this)
 }
 
-fun BootBuildImage.setupEnvironment() {
-    environment("SPRING_PROFILES_ACTIVE", "production")
+fun setupEnvironment(bootBuildImage: BootBuildImage) {
+    bootBuildImage.run {
+        environment.set(environment.get() + mapOf("SPRING_PROFILES_ACTIVE" to "production"))
+    }
 }
 
-fun BootBuildImage.setupBuildProperty() {
-    val bindingsDir: String by project
-    val gradleDir: String by project
+fun setupBuildProperty(bootBuildImage: BootBuildImage) {
+    bootBuildImage.run {
+        val bindingsDir: String by project
+        val gradleDir: String by project
 
-    val bindingVolumes = mutableListOf<String>()
+        val bindingVolumes = mutableListOf<String>()
 
-    if (project.hasProperty("bindingsDir")) bindingVolumes.add("$bindingsDir:/platform/bindings:rw")
-    if (project.hasProperty("gradleDir")) bindingVolumes.add("$gradleDir:/home/cnb/.gradle:rw")
+        if (project.hasProperty("bindingsDir")) bindingVolumes.add("$bindingsDir:/platform/bindings:rw")
+        if (project.hasProperty("gradleDir")) bindingVolumes.add("$gradleDir:/home/cnb/.gradle:rw")
 
-    bindings = bindingVolumes
-    builder = "paketobuildpacks/builder:${Versions.PAKETO_BUILDPACKS_BUILDER}"
+        bindings.set(bindingVolumes)
+        builder.set("paketobuildpacks/builder:${Versions.PAKETO_BUILDPACKS_BUILDER}")
+    }
 }
 
-fun BootBuildImage.setupImageProperty() {
-    val imagePath: String by project
-    val imageBaseName: String by project
-    val imageTag: String by project
+fun setupImageProperty(bootBuildImage: BootBuildImage) {
+    bootBuildImage.run {
+        val imagePath: String by project
+        val imageBaseName: String by project
+        val imageTag: String by project
 
-    if (project.hasProperty("imagePath")) imageName = imagePath
-    if (project.hasProperty("imageBaseName")) imageName += "/$imageBaseName"
-    if (project.hasProperty("imageTag")) tags = mutableListOf("$imageName:$imageTag")
+        if (project.hasProperty("imagePath")) imageName.set(imagePath)
+        if (project.hasProperty("imageBaseName")) imageName.set("${imageName.get()}/$imageBaseName")
+        if (project.hasProperty("imageTag")) tags.set(mutableListOf("${imageName.get()}:$imageTag"))
+    }
 }
 
-fun BootBuildImage.setupDocker() {
-    val dockerHost: String by project
-    val isDockerTlsVerify: String by project
-    val dockerCertPath: String by project
+fun setupDocker(bootBuildImage: BootBuildImage) {
+    bootBuildImage.run {
+        val dockerHost: String by project
+        val isDockerTlsVerify: String by project
+        val dockerCertPath: String by project
 
-    val projectRegistryUrl: String by project
-    val registryUser: String by project
-    val registryPassword: String by project
-    val registryEmail: String by project
+        val projectRegistryUrl: String by project
+        val registryUser: String by project
+        val registryPassword: String by project
+        val registryEmail: String by project
 
-    docker {
-        if (project.hasProperty("dockerHost")) host = dockerHost
-        if (project.hasProperty("isDockerTlsVerify")) isTlsVerify = isDockerTlsVerify.toBoolean()
-        if (project.hasProperty("dockerCertPath")) certPath = dockerCertPath
+        docker {
+            if (project.hasProperty("dockerHost")) host.set(dockerHost)
+            if (project.hasProperty("isDockerTlsVerify")) tlsVerify.set(isDockerTlsVerify.toBoolean())
+            if (project.hasProperty("dockerCertPath")) certPath.set(dockerCertPath)
 
-        publishRegistry {
-            if (project.hasProperty("projectRegistryUrl")) url = projectRegistryUrl
-            if (project.hasProperty("registryUser")) username = registryUser
-            if (project.hasProperty("registryPassword")) password = registryPassword
-            if (project.hasProperty("registryEmail")) email = registryEmail
+            publishRegistry {
+                if (project.hasProperty("projectRegistryUrl")) url.set(projectRegistryUrl)
+                if (project.hasProperty("registryUser")) username.set(registryUser)
+                if (project.hasProperty("registryPassword")) password.set(registryPassword)
+                if (project.hasProperty("registryEmail")) email.set(registryEmail)
+            }
         }
     }
 }

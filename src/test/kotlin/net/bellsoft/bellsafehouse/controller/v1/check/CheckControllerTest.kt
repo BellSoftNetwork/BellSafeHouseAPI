@@ -42,7 +42,7 @@ class CheckControllerTest(
                 }
 
                 Then("200 OK, available 상태가 반환된다") {
-                    mockMvc.get("/api/v1/check") {
+                    mockMvc.get("/v1/check") {
                         locale(Locale.KOREA)
                         params = QueryParamsConverter.convert(userCheckRequest, objectMapper)
                     }.andExpect {
@@ -63,7 +63,7 @@ class CheckControllerTest(
                 }
 
                 Then("400 Bad Request 가 반환된다") {
-                    mockMvc.get("/api/v1/check") {
+                    mockMvc.get("/v1/check") {
                         locale(Locale.KOREA)
                         params = QueryParamsConverter.convert(userCheckRequest, objectMapper)
                     }.andExpect {
@@ -80,7 +80,7 @@ class CheckControllerTest(
                 }
 
                 Then("400 Bad Request 가 반환된다") {
-                    mockMvc.get("/api/v1/check") {
+                    mockMvc.get("/v1/check") {
                         locale(Locale.KOREA)
                         params = QueryParamsConverter.convert(userCheckRequest, objectMapper)
                     }.andExpect {
@@ -101,7 +101,7 @@ class CheckControllerTest(
                 }
 
                 Then("200 OK, available 상태가 반환된다") {
-                    mockMvc.get("/api/v1/check") {
+                    mockMvc.get("/v1/check") {
                         locale(Locale.KOREA)
                         params = QueryParamsConverter.convert(userCheckRequest, objectMapper)
                     }.andExpect {

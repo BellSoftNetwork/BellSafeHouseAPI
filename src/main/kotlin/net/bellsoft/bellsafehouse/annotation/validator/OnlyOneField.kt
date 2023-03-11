@@ -1,8 +1,8 @@
 package net.bellsoft.bellsafehouse.annotation.validator
 
+import jakarta.validation.Constraint
+import jakarta.validation.Payload
 import net.bellsoft.bellsafehouse.component.validator.OnlyOneParameterValidator
-import javax.validation.Constraint
-import javax.validation.Payload
 import kotlin.reflect.KClass
 
 @Target(AnnotationTarget.CLASS)
