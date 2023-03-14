@@ -14,7 +14,8 @@ object ProjectTestConfig : AbstractProjectConfig() {
     override val testNameRemoveWhitespace = true
     override var displayFullTestPath: Boolean? = true
 
-    override fun afterAll() {
+    override suspend fun afterProject() {
+        super.afterProject()
         clearAllMocks()
     }
 
