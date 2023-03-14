@@ -7,7 +7,7 @@ plugins {
 
     id("org.springframework.boot") version "3.0.4"
     id("io.spring.dependency-management") version "1.1.0"
-    id("org.jlleitschuh.gradle.ktlint") version "11.1.0"
+    id("org.jlleitschuh.gradle.ktlint") version "11.3.1"
     id("org.liquibase.gradle") version "2.1.1"
 
     kotlin("jvm") version kotlinVersion
@@ -51,6 +51,7 @@ object Versions {
     const val KOTLIN_FIXTURE = "1.2.0"
     const val JSON_WEB_TOKEN_FOR_JAVA = "0.11.5"
     const val ULID_CREATOR = "5.1.0"
+    const val FINDBUGS_JSR305 = "3.0.2"
 
     /** ### bootBuildImage Task 에서 사용하는 빌더 이미지 버전
      * 빌더 버전 업데이트 시 `bindings/VERSION.md` 파일 업데이트 필요
@@ -108,6 +109,7 @@ object Libraries {
     const val KOTLIN_LOGGING = "io.github.microutils:kotlin-logging:${Versions.KOTLIN_LOGGING}"
     const val DATA_FAKER = "net.datafaker:datafaker:${Versions.DATA_FAKER}"
     const val ULID_CREATOR = "com.github.f4b6a3:ulid-creator:${Versions.ULID_CREATOR}"
+    const val FINDBUGS_JSR305 = "com.google.code.findbugs:jsr305:${Versions.FINDBUGS_JSR305}"
 
     // Ops
     const val SPRING_BOOT_STARTER_ACTUATOR =
@@ -174,6 +176,7 @@ dependencies {
     implementation(Libraries.KOTLIN_LOGGING)
     implementation(Libraries.DATA_FAKER)
     implementation(Libraries.ULID_CREATOR)
+    implementation(Libraries.FINDBUGS_JSR305)
 
     // Ops
     implementation(Libraries.SPRING_BOOT_STARTER_ACTUATOR)
@@ -279,12 +282,11 @@ fun setupDocker(bootBuildImage: BootBuildImage) {
 }
 
 ktlint {
-    version.set("0.48.1")
+    version.set("0.48.2")
     verbose.set(true)
     relative.set(true)
     outputColorName.set("RED")
     enableExperimentalRules.set(true)
-    disabledRules.set(setOf("multiline-if-else"))
 }
 
 tasks.named<Test>("test") {
