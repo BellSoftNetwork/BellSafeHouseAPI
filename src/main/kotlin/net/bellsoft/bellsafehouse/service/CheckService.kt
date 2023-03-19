@@ -15,6 +15,9 @@ class CheckService(
         if (userRepository.existsByUserId(userId))
             return UserAvailableType.DUPLICATED
 
+        if (userRepository.existsDeletedByUserId(userId))
+            return UserAvailableType.DELETED
+
         return UserAvailableType.AVAILABLE
     }
 
@@ -22,12 +25,18 @@ class CheckService(
         if (userRepository.existsByEmail(email))
             return UserAvailableType.DUPLICATED
 
+        if (userRepository.existsDeletedByEmail(email))
+            return UserAvailableType.DELETED
+
         return UserAvailableType.AVAILABLE
     }
 
     private fun checkUserByNickname(nickname: String): UserAvailableType {
         if (userRepository.existsByNickname(nickname))
             return UserAvailableType.DUPLICATED
+
+        if (userRepository.existsDeletedByNickname(nickname))
+            return UserAvailableType.DELETED
 
         return UserAvailableType.AVAILABLE
     }

@@ -10,12 +10,18 @@ import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import net.bellsoft.bellsafehouse.annotation.ExcludeFromJacocoGeneratedReport
 import net.bellsoft.bellsafehouse.domain.base.BaseTime
+import org.hibernate.annotations.Filter
+import org.hibernate.annotations.FilterDef
+import org.hibernate.annotations.SQLDelete
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import java.time.LocalDateTime
 
 @Entity
 @Table(name = "user")
+@SQLDelete(sql = "UPDATE user SET deleted_at = NOW() WHERE id = ?")
+@FilterDef(name = "deletedEntityFilter", defaultCondition = "deleted_at IS NULL")
+@Filter(name = "deletedEntityFilter")
 class User(
     @Column(name = "user_id", nullable = false, unique = true, updatable = false, length = 20)
     val userId: String,
@@ -100,6 +106,6 @@ class User(
 
     override fun toString(): String {
         return "User(id=$id, userId='$userId', password='$password', email='$email', nickname='$nickname'," +
-            " marketingAgreedAt=$marketingAgreedAt)"
+            " marketingAgreedAt=$marketingAgreedAt, deletedAt=$deletedAt)"
     }
 }

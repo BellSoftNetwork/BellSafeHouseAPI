@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.tags.Tag
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import jakarta.validation.Valid
+import mu.KLogging
 import net.bellsoft.bellsafehouse.controller.v1.auth.dto.AccessResponse
 import net.bellsoft.bellsafehouse.controller.v1.auth.dto.RefreshResponse
 import net.bellsoft.bellsafehouse.controller.v1.auth.dto.RegisteredUserResponse
@@ -70,4 +71,6 @@ class AuthController(
 
         return ResponseEntity.ok().body(AccessResponse(accessToken))
     }
+
+    companion object : KLogging()
 }

@@ -25,7 +25,10 @@ class CheckController(
     @GetMapping
     fun checkUser(@Valid userCheckRequest: UserCheckRequest): ResponseEntity<UserCheckResponse> {
         val userAvailableType = checkService.checkUser(userCheckRequest)
-        val userCheckResponse = UserCheckResponse(userCheckRequest, userAvailableType)
+        val userCheckResponse = UserCheckResponse.of(userCheckRequest, userAvailableType)
+
+        if (!userCheckResponse.isAvailable)
+            return ResponseEntity.unprocessableEntity().body(userCheckResponse)
 
         return ResponseEntity.ok().body(userCheckResponse)
     }

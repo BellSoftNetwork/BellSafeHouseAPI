@@ -9,5 +9,10 @@ data class UserCheckResponse(
     val filterParams: UserCheckRequest,
 
     @Schema(description = "사용자 ID 존재 여부")
-    val status: UserAvailableType,
-)
+    val isAvailable: Boolean,
+) {
+    companion object {
+        fun of(filterParams: UserCheckRequest, status: UserAvailableType) =
+            UserCheckResponse(filterParams, status == UserAvailableType.AVAILABLE)
+    }
+}

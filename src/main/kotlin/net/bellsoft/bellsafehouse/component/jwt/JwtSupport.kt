@@ -9,9 +9,13 @@ import io.jsonwebtoken.UnsupportedJwtException
 import io.jsonwebtoken.security.Keys
 import io.jsonwebtoken.security.SignatureException
 import jakarta.servlet.http.Cookie
+import jakarta.servlet.http.HttpServletRequest
+import mu.KLogging
 import net.bellsoft.bellsafehouse.component.jwt.dto.AccessTokenDto
 import net.bellsoft.bellsafehouse.component.jwt.dto.RefreshTokenDto
+import net.bellsoft.bellsafehouse.exception.InvalidAuthHeaderException
 import net.bellsoft.bellsafehouse.exception.InvalidTokenException
+import net.bellsoft.bellsafehouse.exception.TokenNotFoundException
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.time.Instant
@@ -70,6 +74,31 @@ class JwtSupport(
         return AccessTokenDto.ofJwsClaims(parseClaimsJws(accessToken))
     }
 
+    fun getAccessToken(request: HttpServletRequest): String {
+        try {
+            val authorizationHeader = getAuthToken(request)
+
+            if (authorizationHeader.first == BEARER_TOKEN_HEADER_NAME)
+                return authorizationHeader.second
+        } catch (_: InvalidAuthHeaderException) {
+            logger.error("Unable to found authorization header named '$BEARER_TOKEN_HEADER_NAME' on request '$request'")
+        }
+
+        throw TokenNotFoundException()
+    }
+
+    fun getAuthToken(request: HttpServletRequest): Pair<String, String> {
+        try {
+            val authorizationHeader = request.getHeader(AUTHORIZATION_HEADER_NAME)
+                ?: throw InvalidAuthHeaderException()
+            val (authKey, authToken) = authorizationHeader.split(" ", limit = 2)
+
+            return authKey to authToken
+        } catch (ex: IndexOutOfBoundsException) {
+            throw InvalidAuthHeaderException()
+        }
+    }
+
     fun isWillRefreshTokenExpires(token: BearerToken): Boolean {
         val tokenExpirationAt = parseClaimsJws(token.value).body.expiration
         val renewBaseAt = tokenExpirationAt.toInstant().minus(refreshTokenAutoRenewMinute, ChronoUnit.MINUTES)
@@ -86,7 +115,7 @@ class JwtSupport(
         }
     }
 
-    private fun parseClaimsJws(token: String): Jws<Claims> {
+    fun parseClaimsJws(token: String): Jws<Claims> {
         try {
             return jwtParser.parseClaimsJws(token)
         } catch (ex: UnsupportedJwtException) {
@@ -102,8 +131,11 @@ class JwtSupport(
         }
     }
 
-    companion object {
-        const val REFRESH_TOKEN_NAME = "refreshToken"
+    companion object : KLogging() {
+        private const val REFRESH_TOKEN_NAME = "refreshToken"
+
+        private const val AUTHORIZATION_HEADER_NAME = "Authorization"
+        private const val BEARER_TOKEN_HEADER_NAME = "Bearer"
 
         private fun getCurrentInstant(): Instant = Instant.now()
     }
