@@ -1,12 +1,16 @@
 package net.bellsoft.bellsafehouse.component.jwt
 
+import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.assertions.throwables.shouldThrowAny
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockkStatic
 import net.bellsoft.bellsafehouse.exception.InvalidTokenException
+import net.bellsoft.bellsafehouse.exception.TokenNotFoundException
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.mock.web.MockHttpServletRequest
 import java.time.Instant
 import java.time.LocalDate
 import java.time.LocalTime
@@ -30,6 +34,11 @@ class JwtSupportTest(
 
             val generatedRefreshToken = jwtSupport.generateRefreshToken(userId, uuid)
             val generatedAccessToken = jwtSupport.generateAccessToken(generatedRefreshToken)
+            val refreshTokenCookie = jwtSupport.createRefreshTokenCookie(generatedRefreshToken)
+            val httpServletRequest = MockHttpServletRequest().apply {
+                setCookies(refreshTokenCookie)
+                addHeader(AUTHORIZATION_HEADER_NAME, "$BEARER_TOKEN_HEADER_NAME ${generatedAccessToken.credentials}")
+            }
 
             When("임의의 문자열로 refreshToken 정보를 파싱하려고 할 경우") {
                 val randomString = "123456abcdef"
@@ -116,6 +125,38 @@ class JwtSupportTest(
                     }
                 }
             }
+
+            When("정상적인 요청으로 Access Token 을 얻으려고 했을 경우") {
+                Then("해당 Access Token 을 정상적으로 파싱할 수 있다") {
+                    shouldNotThrowAny {
+                        jwtSupport.getAccessToken(httpServletRequest)
+                    }
+                }
+            }
+
+            When("잘못된 액세스 토큰 헤더로 Access Token 을 얻으려고 했을 경우") {
+                val abnormalTokenRequest = MockHttpServletRequest().apply {
+                    removeHeader(AUTHORIZATION_HEADER_NAME)
+                    addHeader(AUTHORIZATION_HEADER_NAME, "$BEARER_TOKEN_HEADER_NAME abnormal.access.token")
+                }
+
+                Then("해당 Access Token 을 파싱하는 도중 예외가 발생한다") {
+                    shouldThrowAny {
+                        jwtSupport.parseClaimsJws(jwtSupport.getAccessToken(abnormalTokenRequest))
+                    }
+                }
+            }
+
+            When("빈 $AUTHORIZATION_HEADER_NAME 헤더 요청으로 Access Token 을 얻으려고 했을 경우") {
+                val emptyAuthorizationRequest = MockHttpServletRequest()
+                emptyAuthorizationRequest.removeHeader(AUTHORIZATION_HEADER_NAME)
+
+                Then("해당 Access Token 을 파싱하는 도중 예외가 발생한다") {
+                    shouldThrow<TokenNotFoundException> {
+                        jwtSupport.getAccessToken(emptyAuthorizationRequest)
+                    }
+                }
+            }
         }
     },
 ) {
@@ -123,5 +164,8 @@ class JwtSupportTest(
         val TEST_MOCK_INSTANT: Instant = ZonedDateTime
             .of(LocalDate.of(2020, 1, 29), LocalTime.MIN, ZoneId.systemDefault())
             .toInstant()
+
+        private const val AUTHORIZATION_HEADER_NAME = "Authorization"
+        private const val BEARER_TOKEN_HEADER_NAME = "Bearer"
     }
 }

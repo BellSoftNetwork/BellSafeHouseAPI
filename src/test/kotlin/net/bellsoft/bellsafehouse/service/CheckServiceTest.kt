@@ -1,11 +1,13 @@
 package net.bellsoft.bellsafehouse.service
 
-import io.kotest.assertions.throwables.shouldNotThrowAny
+import com.ninjasquad.springmockk.MockkBean
 import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
+import io.mockk.every
 import net.bellsoft.bellsafehouse.controller.v1.auth.dto.UserRegistrationRequest
 import net.bellsoft.bellsafehouse.controller.v1.check.dto.UserCheckRequest
+import net.bellsoft.bellsafehouse.domain.user.UserRepository
 import net.bellsoft.bellsafehouse.exception.UnprocessableEntityException
 import net.bellsoft.bellsafehouse.fixture.baseNullFixture
 import net.bellsoft.bellsafehouse.service.type.UserAvailableType
@@ -16,7 +18,7 @@ import org.springframework.test.context.ActiveProfiles
 @ActiveProfiles("test")
 internal class CheckServiceTest(
     private val checkService: CheckService,
-    private val authService: AuthService,
+    @MockkBean private val userRepository: UserRepository,
 ) : BehaviorSpec(
     {
         val fixture = baseNullFixture
@@ -26,6 +28,9 @@ internal class CheckServiceTest(
                 val userCheckRequest: UserCheckRequest = fixture {
                     property(UserCheckRequest::userId) { "emptyUserId" }
                 }
+
+                every { userRepository.existsByUserId(userCheckRequest.userId!!) } returns false
+                every { userRepository.existsDeletedByUserId(userCheckRequest.userId!!) } returns false
 
                 Then("available 이 반환 된다.") {
                     checkService.checkUser(userCheckRequest) shouldBe UserAvailableType.AVAILABLE
@@ -37,6 +42,9 @@ internal class CheckServiceTest(
                     property(UserCheckRequest::email) { "emptyUserEmail" }
                 }
 
+                every { userRepository.existsByEmail(userCheckRequest.email!!) } returns false
+                every { userRepository.existsDeletedByEmail(userCheckRequest.email!!) } returns false
+
                 Then("available 이 반환 된다.") {
                     checkService.checkUser(userCheckRequest) shouldBe UserAvailableType.AVAILABLE
                 }
@@ -46,6 +54,9 @@ internal class CheckServiceTest(
                 val userCheckRequest: UserCheckRequest = fixture {
                     property(UserCheckRequest::nickname) { "emptyUserNickname" }
                 }
+
+                every { userRepository.existsByNickname(userCheckRequest.nickname!!) } returns false
+                every { userRepository.existsDeletedByNickname(userCheckRequest.nickname!!) } returns false
 
                 Then("available 이 반환 된다.") {
                     checkService.checkUser(userCheckRequest) shouldBe UserAvailableType.AVAILABLE
@@ -71,14 +82,14 @@ internal class CheckServiceTest(
                 property(UserRegistrationRequest::nickname) { "checkUserNick" }
             }
 
-            shouldNotThrowAny { authService.register(userRegistrationRequest) }
-
             When("유저 아이디로 유저 조회 시도 시") {
                 val userCheckRequest: UserCheckRequest = fixture {
                     property(UserCheckRequest::userId) { userRegistrationRequest.userId }
                 }
 
-                Then("duplicated 이 반환 된다.") {
+                every { userRepository.existsByUserId(userRegistrationRequest.userId) } returns true
+
+                Then("duplicated 가 반환 된다.") {
                     checkService.checkUser(userCheckRequest) shouldBe UserAvailableType.DUPLICATED
                 }
             }
@@ -87,6 +98,8 @@ internal class CheckServiceTest(
                 val userCheckRequest: UserCheckRequest = fixture {
                     property(UserCheckRequest::email) { userRegistrationRequest.email }
                 }
+
+                every { userRepository.existsByEmail(userRegistrationRequest.email) } returns true
 
                 Then("duplicated 가 반환 된다.") {
                     checkService.checkUser(userCheckRequest) shouldBe UserAvailableType.DUPLICATED
@@ -98,8 +111,58 @@ internal class CheckServiceTest(
                     property(UserCheckRequest::nickname) { userRegistrationRequest.nickname }
                 }
 
+                every { userRepository.existsByNickname(userRegistrationRequest.nickname) } returns true
+
                 Then("duplicated 가 반환 된다.") {
                     checkService.checkUser(userCheckRequest) shouldBe UserAvailableType.DUPLICATED
+                }
+            }
+        }
+
+        Given("가입한 사용자가 삭제 된 상황에서") {
+            val userRegistrationRequest: UserRegistrationRequest = fixture {
+                property(UserRegistrationRequest::userId) { "deletedUserId" }
+                property(UserRegistrationRequest::password) { "deletedPassword" }
+                property(UserRegistrationRequest::email) { "deletedEmail" }
+                property(UserRegistrationRequest::nickname) { "deletedUserNick" }
+            }
+
+            When("유저 아이디로 유저 조회 시도 시") {
+                val userCheckRequest: UserCheckRequest = fixture {
+                    property(UserCheckRequest::userId) { userRegistrationRequest.userId }
+                }
+
+                every { userRepository.existsByUserId(userRegistrationRequest.userId) } returns false
+                every { userRepository.existsDeletedByUserId(userRegistrationRequest.userId) } returns true
+
+                Then("deleted 가 반환 된다.") {
+                    checkService.checkUser(userCheckRequest) shouldBe UserAvailableType.DELETED
+                }
+            }
+
+            When("유저 이메일로 유저 조회 시도 시") {
+                val userCheckRequest: UserCheckRequest = fixture {
+                    property(UserCheckRequest::email) { userRegistrationRequest.email }
+                }
+
+                every { userRepository.existsByEmail(userRegistrationRequest.email) } returns false
+                every { userRepository.existsDeletedByEmail(userRegistrationRequest.email) } returns true
+
+                Then("deleted 가 반환 된다.") {
+                    checkService.checkUser(userCheckRequest) shouldBe UserAvailableType.DELETED
+                }
+            }
+
+            When("유저 별명으로 유저 조회 시도 시") {
+                val userCheckRequest: UserCheckRequest = fixture {
+                    property(UserCheckRequest::nickname) { userRegistrationRequest.nickname }
+                }
+
+                every { userRepository.existsByNickname(userRegistrationRequest.nickname) } returns false
+                every { userRepository.existsDeletedByNickname(userRegistrationRequest.nickname) } returns true
+
+                Then("deleted 가 반환 된다.") {
+                    checkService.checkUser(userCheckRequest) shouldBe UserAvailableType.DELETED
                 }
             }
         }

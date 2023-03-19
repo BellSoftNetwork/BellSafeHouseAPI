@@ -118,6 +118,9 @@ object Libraries {
     // Dev
     const val SPRING_BOOT_DEVTOOLS = "org.springframework.boot:spring-boot-devtools:${Versions.SPRING_BOOT}"
 
+    // AOP
+    const val SPRING_BOOT_STARTER_AOP = "org.springframework.boot:spring-boot-starter-aop:${Versions.SPRING_BOOT}"
+
     // Test
     const val SPRING_BOOT_STARTER_TEST = "org.springframework.boot:spring-boot-starter-test:${Versions.SPRING_BOOT}"
     const val KOTEST_RUNNER_JUNIT5 = "io.kotest:kotest-runner-junit5:${Versions.KOTEST}"
@@ -183,6 +186,9 @@ dependencies {
 
     // Dev
     developmentOnly(Libraries.SPRING_BOOT_DEVTOOLS)
+
+    // AOP
+    implementation(Libraries.SPRING_BOOT_STARTER_AOP)
 
     // Test
     testImplementation(Libraries.SPRING_BOOT_STARTER_TEST) {

@@ -41,13 +41,13 @@ class CheckControllerTest(
                     property(UserCheckRequest::nickname) { null }
                 }
 
-                Then("200 OK, available 상태가 반환된다") {
+                Then("200 OK, isAvailable 에 true 가 반환된다") {
                     mockMvc.get("/v1/check") {
                         locale(Locale.KOREA)
                         params = QueryParamsConverter.convert(userCheckRequest, objectMapper)
                     }.andExpect {
                         status { isOk() }
-                        jsonPath("$.status") { value(UserAvailableType.AVAILABLE.value) }
+                        jsonPath("$.isAvailable") { value(true) }
                         jsonPath("$.filterParams.userId") { value(userCheckRequest.userId) }
                         jsonPath("$.filterParams.email") { doesNotHaveJsonPath() }
                         jsonPath("$.filterParams.nickname") { doesNotHaveJsonPath() }
@@ -100,13 +100,13 @@ class CheckControllerTest(
                     property(UserCheckRequest::nickname) { null }
                 }
 
-                Then("200 OK, available 상태가 반환된다") {
+                Then("200 OK, isAvailable 에 false 가 반환된다") {
                     mockMvc.get("/v1/check") {
                         locale(Locale.KOREA)
                         params = QueryParamsConverter.convert(userCheckRequest, objectMapper)
                     }.andExpect {
-                        status { isOk() }
-                        jsonPath("$.status") { value(UserAvailableType.DUPLICATED.value) }
+                        status { isUnprocessableEntity() }
+                        jsonPath("$.isAvailable") { value(false) }
                         jsonPath("$.filterParams.userId") { value(userCheckRequest.userId) }
                         jsonPath("$.filterParams.email") { doesNotHaveJsonPath() }
                         jsonPath("$.filterParams.nickname") { doesNotHaveJsonPath() }

@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServletResponse
 import net.bellsoft.bellsafehouse.component.UserTokenProvider
 import net.bellsoft.bellsafehouse.component.jwt.BearerToken
 import net.bellsoft.bellsafehouse.component.jwt.JwtSupport
-import net.bellsoft.bellsafehouse.exception.InvalidAuthHeaderException
 import net.bellsoft.bellsafehouse.exception.InvalidTokenException
 import net.bellsoft.bellsafehouse.exception.TokenNotFoundException
 import net.bellsoft.bellsafehouse.service.AuthService
@@ -39,35 +38,10 @@ class JwtFilter(
     }
 
     private fun getAuthentication(request: HttpServletRequest): Authentication {
-        val accessToken = getAccessToken(request) ?: throw TokenNotFoundException()
+        val accessToken = jwtSupport.getAccessToken(request)
         val userDetails = authService.loadUserByUsername(jwtSupport.getAccessToken(accessToken).userId)
 
         return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
-    }
-
-    private fun getAccessToken(request: HttpServletRequest): String? {
-        try {
-            val authorizationHeader = getAuthToken(request)
-
-            if (authorizationHeader.first == BEARER_TOKEN_HEADER_NAME)
-                return authorizationHeader.second
-        } catch (_: InvalidAuthHeaderException) {
-            return null
-        }
-
-        return null
-    }
-
-    private fun getAuthToken(request: HttpServletRequest): Pair<String, String> {
-        try {
-            val authorizationHeader = request.getHeader(AUTHORIZATION_HEADER_NAME)
-                ?: throw InvalidAuthHeaderException()
-            val (authKey, authToken) = authorizationHeader.split(" ", limit = 2)
-
-            return authKey to authToken
-        } catch (ex: IndexOutOfBoundsException) {
-            throw InvalidAuthHeaderException()
-        }
     }
 
     private fun tryReissueRefreshToken(request: HttpServletRequest, response: HttpServletResponse) {
@@ -80,17 +54,12 @@ class JwtFilter(
     }
 
     private fun getRefreshToken(request: HttpServletRequest) =
-        request.cookies.firstOrNull { it.name == AuthService.REFRESH_TOKEN_NAME }?.value
+        request.cookies?.firstOrNull { it.name == AuthService.REFRESH_TOKEN_NAME }?.value
 
     private fun reissueRefreshToken(userId: String, response: HttpServletResponse) {
         val userToken = userTokenProvider.issueUserToken(userId)
         val newRefreshToken = jwtSupport.generateRefreshToken(userId, userToken.id)
 
         response.addCookie(jwtSupport.createRefreshTokenCookie(newRefreshToken))
-    }
-
-    companion object {
-        private const val AUTHORIZATION_HEADER_NAME = "Authorization"
-        private const val BEARER_TOKEN_HEADER_NAME = "Bearer"
     }
 }
