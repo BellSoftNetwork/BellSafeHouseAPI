@@ -23,7 +23,7 @@ internal class AuthServiceTest(
     {
         val fixture = baseFixture.new {
             property(UserRegistrationRequest::password) { "password" }
-            property(UserRegistrationRequest::marketingAgreedAt) { true }
+            property(UserRegistrationRequest::marketingAgreed) { true }
         }
 
         Given("가입한 사용자가 없는 상황에서") {

@@ -54,7 +54,7 @@ internal class UserTest(
         }
 
         Given("유저가 생성된 상황에서") {
-            val user = userRepository.save(fixture())
+            val user = userRepository.save(fixture { property(User::marketingAgreed) { false } })
 
             When("기존에 존재하는 아이디로 유저 엔티티를 생성하면") {
                 val duplicatedUser: User = fixture {
@@ -93,34 +93,33 @@ internal class UserTest(
             }
 
             When("마케팅 수신 동의를 수행하면") {
-                user.agreeToMarketing()
-                userRepository.save(user)
+                userRepository.save(user.apply { marketingAgreed = true })
 
                 Then("동의 시각에 현재 시각이 기록된다") {
                     val marketingAgreedUser = userRepository.findByIdOrNull(user.id)
+                        ?: throw Exception("테스트 데이터 결함")
 
-                    marketingAgreedUser shouldNotBe null
-                    marketingAgreedUser?.marketingAgreedAt shouldBe TEST_LOCAL_DATE_TIME
+                    marketingAgreedUser.marketingAgreedAt shouldBe TEST_LOCAL_DATE_TIME
                 }
 
                 Then("마케팅 수신 동의 여부 메서드가 true 를 반환한다") {
-                    user.isMarketingAgree() shouldBe true
+                    user.marketingAgreed shouldBe true
                 }
             }
 
-            When("마케팅 수신 동의를 철회하면") {
-                user.disagreeToMarketing()
-                userRepository.save(user)
+            When("마케팅 수신 동의 후 철회하면") {
+                userRepository.save(user.apply { marketingAgreed = true })
+                userRepository.save(user.apply { marketingAgreed = false })
 
                 Then("동의 시각이 제거된다") {
                     val marketingAgreedUser = userRepository.findByIdOrNull(user.id)
+                        ?: throw Exception("테스트 데이터 결함")
 
-                    marketingAgreedUser shouldNotBe null
-                    marketingAgreedUser?.marketingAgreedAt shouldBe null
+                    marketingAgreedUser.marketingAgreedAt shouldBe null
                 }
 
                 Then("마케팅 수신 동의 여부 메서드가 false 를 반환한다") {
-                    user.isMarketingAgree() shouldBe false
+                    user.marketingAgreed shouldBe false
                 }
             }
 

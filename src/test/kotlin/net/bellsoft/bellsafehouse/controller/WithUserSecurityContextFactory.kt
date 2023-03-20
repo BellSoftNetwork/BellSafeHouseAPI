@@ -5,7 +5,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContext
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.test.context.support.WithSecurityContextFactory
-import java.time.LocalDateTime
 
 class WithUserSecurityContextFactory : WithSecurityContextFactory<WithUser> {
     override fun createSecurityContext(annotation: WithUser): SecurityContext {
@@ -14,7 +13,7 @@ class WithUserSecurityContextFactory : WithSecurityContextFactory<WithUser> {
             annotation.password,
             annotation.email,
             annotation.nickname,
-            if (annotation.marketingAgreedAt) LocalDateTime.now() else null,
+            annotation.marketingAgreed,
         )
 
         val context = SecurityContextHolder.getContext()

@@ -9,5 +9,5 @@ annotation class WithUser(
     val password: String = "password",
     val email: String = "user@email.com",
     val nickname: String = "userNickname",
-    val marketingAgreedAt: Boolean = false,
+    val marketingAgreed: Boolean = false,
 )
