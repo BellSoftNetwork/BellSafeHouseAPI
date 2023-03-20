@@ -45,7 +45,7 @@ internal class AuthControllerTest(
         val objectMapper = jacksonObjectMapper()
         val fixture = baseFixture.new {
             property(UserRegistrationRequest::password) { "password" }
-            property(UserRegistrationRequest::marketingAgreedAt) { true }
+            property(UserRegistrationRequest::marketingAgreed) { true }
         }
 
         Given("처음 접속한 상황에서") {

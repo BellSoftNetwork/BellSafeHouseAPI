@@ -31,7 +31,7 @@ class User(
 
     email: String,
     nickname: String,
-    marketingAgreedAt: LocalDateTime? = null,
+    marketingAgreed: Boolean = false,
 ) : BaseTime(), UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -48,12 +48,25 @@ class User(
         private set
 
     @Column(name = "marketing_agreed_at", nullable = true)
-    var marketingAgreedAt: LocalDateTime? = marketingAgreedAt
+    var marketingAgreedAt: LocalDateTime? = if (marketingAgreed) LocalDateTime.now() else null
         private set
 
     @OneToMany(mappedBy = "user", cascade = [CascadeType.ALL], orphanRemoval = true)
     var userTokens: MutableList<UserToken> = mutableListOf()
         private set
+
+    var marketingAgreed: Boolean
+        get() = marketingAgreedAt != null
+        set(value) {
+            if (value && marketingAgreedAt != null)
+                return
+
+            marketingAgreedAt = if (value) LocalDateTime.now() else null
+        }
+
+    fun withdraw() {
+        softDelete()
+    }
 
     @ExcludeFromJacocoGeneratedReport
     override fun getAuthorities(): MutableCollection<out GrantedAuthority>? {
@@ -86,22 +99,6 @@ class User(
     @ExcludeFromJacocoGeneratedReport
     override fun isEnabled(): Boolean {
         return true
-    }
-
-    fun isMarketingAgree(): Boolean {
-        return marketingAgreedAt != null
-    }
-
-    fun agreeToMarketing() {
-        marketingAgreedAt = LocalDateTime.now()
-    }
-
-    fun disagreeToMarketing() {
-        marketingAgreedAt = null
-    }
-
-    fun withdraw() {
-        softDelete()
     }
 
     override fun toString(): String {

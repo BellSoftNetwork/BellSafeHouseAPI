@@ -5,7 +5,6 @@ import jakarta.validation.constraints.Email
 import jakarta.validation.constraints.Size
 import net.bellsoft.bellsafehouse.domain.user.User
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
-import java.time.LocalDateTime
 
 @Schema(description = "회원가입 요청 정보")
 data class UserRegistrationRequest(
@@ -26,7 +25,7 @@ data class UserRegistrationRequest(
     val nickname: String,
 
     @Schema(description = "마케팅 메일 동의 여부", defaultValue = "true")
-    val marketingAgreedAt: Boolean = true,
+    val marketingAgreed: Boolean = true,
 ) {
     fun toEntity(): User {
         return User(
@@ -34,7 +33,7 @@ data class UserRegistrationRequest(
             password = PASSWORD_ENCODER.encode(password),
             email = email,
             nickname = nickname,
-            marketingAgreedAt = if (marketingAgreedAt) LocalDateTime.now() else null,
+            marketingAgreed = marketingAgreed,
         )
     }
 
