@@ -4,16 +4,18 @@ source "${BASH_SOURCE%/*}/configs/base.sh"
 source "${BASH_SOURCE%/*}/configs/project.sh"
 source "${BASH_SOURCE%/*}/configs/deploy.sh"
 
-# Get app types
-APP_TYPE=$(${KUBECTL} -n "${PROJECT_NAMESPACE}" get -o custom-columns=appType:.metadata.labels.type pods | tail -n +2 | grep -v "<none>")
+# Get list of pods
+POD_LIST=$(${KUBECTL} -n "${PROJECT_NAMESPACE}" get -o custom-columns=appType:.metadata.name pods | tail -n +2)
 
-# App type selection
-if [[ -n $APP_TYPE ]]; then
+# Pod selection
+if [[ -n $POD_LIST ]]; then
   echo "로그를 출력할 Pod를 선택하세요."
-  select type in $APP_TYPE; do
-    SELECTED_APP_TYPE=$type
-    POD_NAME=$(${KUBECTL} -n "${PROJECT_NAMESPACE}" get -o name pods -l "type=$SELECTED_APP_TYPE" | head -n 1)
+  select POD_NAME in $POD_LIST; do
     printf "\n"
+    if [[ $POD_NAME = "" ]]; then
+      echo "Pod를 찾을 수 없습니다. 네임스페이스 ${PROJECT_NAMESPACE}를 확인하시거나 쿠버네티스 상태를 확인하십시오."
+      exit 1
+    fi
     break
   done
 else
@@ -22,8 +24,8 @@ else
 fi
 
 # Get container list
-CONTAINER_LIST_INIT=$(${KUBECTL} -n "${PROJECT_NAMESPACE}" get -o custom-columns=containerType:.spec.initContainers[*].name pods -l "type=$SELECTED_APP_TYPE" | tail -n +2 | grep -v "<none>")
-CONTAINER_LIST=$(${KUBECTL} -n "${PROJECT_NAMESPACE}" get -o custom-columns=containerType:.spec.containers[*].name pods -l "type=$SELECTED_APP_TYPE" | tail -n +2)
+CONTAINER_LIST_INIT=$(${KUBECTL} -n "${PROJECT_NAMESPACE}" get -o custom-columns=containerType:.spec.initContainers[*].name pods "$POD_NAME" | tail -n +2 | grep -v "<none>")
+CONTAINER_LIST=$(${KUBECTL} -n "${PROJECT_NAMESPACE}" get -o custom-columns=containerType:.spec.containers[*].name pods "$POD_NAME" | tail -n +2)
 
 # set CONTAINER_LIST_ALL to joined with init container, non-init container
 # if not exists, just set to $CONTAINER_LIST
