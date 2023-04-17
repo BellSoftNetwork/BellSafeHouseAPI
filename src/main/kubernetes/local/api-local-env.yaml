@@ -67,6 +67,10 @@ spec:
               value: ${DATABASE_MYSQL_APP_PASSWORD}
             - name: DATABASE_MYSQL_SCHEMA
               value: ${DATABASE_MYSQL_APP_DATABASE}
+          envFrom:
+            - secretRef:
+                name: smtp-authn
+                optional: true
       volumes:
         - name: project-root
           hostPath:

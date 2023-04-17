@@ -3,6 +3,10 @@ spring:
     import:
       - classpath:config/common/optional-jwt.yaml
       - classpath:config/common/jpa-detail-logging.yaml
+  mail:
+    properties:
+      mail:
+        debug: true
 ---
 application:
   deploy:

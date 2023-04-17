@@ -1,4 +1,4 @@
-package net.bellsoft.bellsafehouse.service
+package net.bellsoft.bellsafehouse.service.auth
 
 import net.bellsoft.bellsafehouse.component.UserProvider
 import net.bellsoft.bellsafehouse.component.UserTokenProvider

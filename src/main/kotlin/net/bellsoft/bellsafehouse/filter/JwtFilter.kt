@@ -8,7 +8,7 @@ import net.bellsoft.bellsafehouse.component.jwt.BearerToken
 import net.bellsoft.bellsafehouse.component.jwt.JwtSupport
 import net.bellsoft.bellsafehouse.exception.InvalidTokenException
 import net.bellsoft.bellsafehouse.exception.TokenNotFoundException
-import net.bellsoft.bellsafehouse.service.AuthService
+import net.bellsoft.bellsafehouse.service.auth.AuthService
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder

@@ -56,7 +56,7 @@ class AccountServiceTest(
                 Then("정상적으로 변경된다") {
                     assertSoftly {
                         userSlot.captured.id shouldBe normalUser.id
-                        userSlot.captured.password shouldBe accountEditRequest.password
+                        userSlot.captured.password shouldBe normalUser.password
                         userSlot.captured.email shouldBe accountEditRequest.email
                         userSlot.captured.nickname shouldBe accountEditRequest.nickname
                         userSlot.captured.marketingAgreed shouldBe accountEditRequest.marketingAgreed
@@ -78,7 +78,7 @@ class AccountServiceTest(
                 Then("정상적으로 변경된다") {
                     assertSoftly {
                         userSlot.captured.id shouldBe normalUser.id
-                        userSlot.captured.password shouldBe accountEditRequest.password
+                        userSlot.captured.password shouldBe normalUser.password
                         userSlot.captured.email shouldBe normalUser.email
                         userSlot.captured.nickname shouldBe normalUser.nickname
                         userSlot.captured.marketingAgreed shouldBe normalUser.marketingAgreed

@@ -3,6 +3,7 @@ package net.bellsoft.bellsafehouse.controller
 import io.swagger.v3.oas.annotations.media.Content
 import io.swagger.v3.oas.annotations.media.Schema
 import io.swagger.v3.oas.annotations.responses.ApiResponse
+import jakarta.validation.ConstraintViolationException
 import mu.KLogging
 import net.bellsoft.bellsafehouse.controller.dto.ErrorResponse
 import net.bellsoft.bellsafehouse.exception.BadRequestException
@@ -43,6 +44,26 @@ class ExceptionController {
                 ErrorResponse(
                     message = "잘못된 요청",
                     errors = globalErrors,
+                    fieldErrors = fieldErrors,
+                ),
+            )
+    }
+
+    @ApiResponse(responseCode = "400", content = [Content(schema = Schema(implementation = ErrorResponse::class))])
+    @ExceptionHandler(ConstraintViolationException::class)
+    protected fun handleConstraintViolationException(
+        ex: ConstraintViolationException,
+    ): ResponseEntity<ErrorResponse> {
+        val fieldErrors = ex.constraintViolations.map {
+            "'${it.propertyPath}'은(는) ${it.message} (요청 값: ${it.invalidValue})"
+        }
+
+        return ResponseEntity
+            .badRequest()
+            .body(
+                ErrorResponse(
+                    message = "잘못된 요청",
+                    errors = listOf(ex.message ?: ""),
                     fieldErrors = fieldErrors,
                 ),
             )

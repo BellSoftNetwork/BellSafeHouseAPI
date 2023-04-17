@@ -92,6 +92,10 @@ object Libraries {
     // Communication
     const val SPRING_BOOT_STARTER_MAIL = "org.springframework.boot:spring-boot-starter-mail:${Versions.SPRING_BOOT}"
 
+    // Template Engine
+    const val SPRING_BOOT_STARTER_THYMELEAF =
+        "org.springframework.boot:spring-boot-starter-thymeleaf:${Versions.SPRING_BOOT}"
+
     // Process
     const val SPRING_BOOT_STARTER_BATCH = "org.springframework.boot:spring-boot-starter-batch:${Versions.SPRING_BOOT}"
     const val SPRING_BOOT_BATCH_TEST = "org.springframework.batch:spring-batch-test:${Versions.SPRING_BATCH}"
@@ -164,6 +168,9 @@ dependencies {
 
     // Communication
     implementation(Libraries.SPRING_BOOT_STARTER_MAIL)
+
+    // Template Engine
+    implementation(Libraries.SPRING_BOOT_STARTER_THYMELEAF)
 
     // Process
     implementation(Libraries.SPRING_BOOT_STARTER_BATCH)

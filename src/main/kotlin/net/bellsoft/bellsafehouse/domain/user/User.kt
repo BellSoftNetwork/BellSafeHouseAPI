@@ -15,7 +15,9 @@ import org.hibernate.annotations.FilterDef
 import org.hibernate.annotations.SQLDelete
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.time.LocalDateTime
+import java.util.UUID
 
 @Entity
 @Table(name = "user")
@@ -64,6 +66,12 @@ class User(
             marketingAgreedAt = if (value) LocalDateTime.now() else null
         }
 
+    @Column(name = "reset_token", nullable = true, columnDefinition = "binary(16)")
+    var resetToken: UUID? = null
+
+    @Column(name = "reset_token_created_at", nullable = true)
+    var resetTokenCreatedAt: LocalDateTime? = null
+
     fun withdraw() {
         softDelete()
     }
@@ -75,6 +83,10 @@ class User(
 
     override fun getPassword(): String {
         return password
+    }
+
+    fun setPassword(password: String) {
+        this.password = PASSWORD_ENCODER.encode(password)
     }
 
     override fun getUsername(): String {
@@ -104,5 +116,9 @@ class User(
     override fun toString(): String {
         return "User(id=$id, userId='$userId', password='$password', email='$email', nickname='$nickname'," +
             " marketingAgreedAt=$marketingAgreedAt, deletedAt=$deletedAt)"
+    }
+
+    companion object {
+        private val PASSWORD_ENCODER = BCryptPasswordEncoder()
     }
 }
