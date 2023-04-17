@@ -19,7 +19,7 @@ import net.bellsoft.bellsafehouse.exception.InvalidTokenException
 import net.bellsoft.bellsafehouse.exception.PasswordMismatchException
 import net.bellsoft.bellsafehouse.exception.UnprocessableEntityException
 import net.bellsoft.bellsafehouse.fixture.baseFixture
-import net.bellsoft.bellsafehouse.service.AuthService
+import net.bellsoft.bellsafehouse.service.auth.AuthService
 import net.bellsoft.bellsafehouse.service.dto.UserAuthToken
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest
 import org.springframework.http.MediaType

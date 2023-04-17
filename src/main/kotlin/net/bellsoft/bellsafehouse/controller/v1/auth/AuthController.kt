@@ -14,7 +14,7 @@ import net.bellsoft.bellsafehouse.controller.v1.auth.dto.RegisteredUserResponse
 import net.bellsoft.bellsafehouse.controller.v1.auth.dto.UserLoginRequest
 import net.bellsoft.bellsafehouse.controller.v1.auth.dto.UserRegistrationRequest
 import net.bellsoft.bellsafehouse.exception.InvalidTokenException
-import net.bellsoft.bellsafehouse.service.AuthService
+import net.bellsoft.bellsafehouse.service.auth.AuthService
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.validation.annotation.Validated

@@ -1,4 +1,4 @@
-package net.bellsoft.bellsafehouse.service
+package net.bellsoft.bellsafehouse.service.auth
 
 import io.kotest.assertions.throwables.shouldNotThrowAny
 import io.kotest.assertions.throwables.shouldThrow

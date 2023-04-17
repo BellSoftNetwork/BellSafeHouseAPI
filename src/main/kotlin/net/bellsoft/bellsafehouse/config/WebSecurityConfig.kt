@@ -3,7 +3,7 @@ package net.bellsoft.bellsafehouse.config
 import net.bellsoft.bellsafehouse.component.UserTokenProvider
 import net.bellsoft.bellsafehouse.component.jwt.JwtSupport
 import net.bellsoft.bellsafehouse.filter.JwtFilter
-import net.bellsoft.bellsafehouse.service.AuthService
+import net.bellsoft.bellsafehouse.service.auth.AuthService
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.security.config.annotation.web.builders.HttpSecurity

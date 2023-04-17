@@ -37,6 +37,24 @@ spring:
     change-log: classpath:/db/changelog-master.yaml
     database-change-log-table: database_changelog
     database-change-log-lock-table: database_changelog_lock
+  mail:
+    default-encoding: UTF-8
+    host: ${SMTP_HOST:localhost}
+    port: ${SMTP_PORT:25}
+    username: ${SMTP_USERNAME:user}
+    password: ${SMTP_PASSWORD:test}
+    properties:
+      mail:
+        smtp:
+          timeout: 5000
+          auth: true
+          starttls:
+            enable: ${SMTP_AUTH_TLS:false}
+  thymeleaf:
+    prefix: classpath:/mail-templates/
+    suffix: .html
+    mode: HTML
+    encoding: UTF-8
 
 security:
   jwt:
@@ -46,6 +64,14 @@ security:
       auto-renew-minute: ${SECURITY_JWT_REFRESH_AUTO_RENEW_MINUTE:10080}
     access:
       expiration-minute: ${SECURITY_JWT_ACCESS_EXPIRATION_MINUTE:720}
+
+i18n:
+  basename: classpath:/lang/messages
+  encoding: UTF-8
+  cacheSeconds: 180
+
+frontend_url:
+  reset: "https://bellsafehouse.com/resetPassword?resetToken="
 
 logging:
   level:
