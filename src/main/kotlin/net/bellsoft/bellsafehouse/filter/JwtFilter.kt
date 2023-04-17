@@ -39,14 +39,14 @@ class JwtFilter(
 
     private fun getAuthentication(request: HttpServletRequest): Authentication {
         val accessToken = jwtSupport.getAccessToken(request)
-        val userDetails = authService.loadUserByUsername(jwtSupport.getAccessToken(accessToken).userId)
+        val userDetails = authService.loadUserByUsername(jwtSupport.parseAccessToken(accessToken).userId)
 
         return UsernamePasswordAuthenticationToken(userDetails, "", userDetails.authorities)
     }
 
     private fun tryReissueRefreshToken(request: HttpServletRequest, response: HttpServletResponse) {
         val refreshToken = getRefreshToken(request) ?: throw TokenNotFoundException()
-        val refreshTokenDto = jwtSupport.getRefreshToken(refreshToken)
+        val refreshTokenDto = jwtSupport.parseRefreshToken(refreshToken)
         val bearerToken = BearerToken(refreshToken)
 
         if (jwtSupport.isWillRefreshTokenExpires(bearerToken))

@@ -14,6 +14,7 @@ class WithUserSecurityContextFactory : WithSecurityContextFactory<WithUser> {
             annotation.email,
             annotation.nickname,
             annotation.marketingAgreed,
+            annotation.role,
         )
 
         val context = SecurityContextHolder.getContext()

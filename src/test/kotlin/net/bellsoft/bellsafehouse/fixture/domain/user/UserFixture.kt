@@ -1,6 +1,7 @@
 package net.bellsoft.bellsafehouse.fixture.domain.user
 
 import net.bellsoft.bellsafehouse.domain.user.User
+import net.bellsoft.bellsafehouse.domain.user.UserRole
 import net.bellsoft.bellsafehouse.fixture.FixtureFeature
 import net.bellsoft.bellsafehouse.fixture.util.fixtureConfig
 import net.datafaker.Faker
@@ -11,11 +12,13 @@ class UserFixture {
         NORMAL {
             override fun config() = fixtureConfig {
                 property(User::nickname) { "normal-${FAKER.random().hex(10)}" }
+                property(User::role) { UserRole.NORMAL }
             }
         },
         ADMIN {
             override fun config() = fixtureConfig {
                 property(User::nickname) { "admin-${FAKER.random().hex(10)}" }
+                property(User::role) { UserRole.ADMIN }
             }
         },
     }
