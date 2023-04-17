@@ -7,6 +7,7 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.every
 import io.mockk.mockkStatic
+import net.bellsoft.bellsafehouse.domain.user.UserRole
 import net.bellsoft.bellsafehouse.exception.InvalidTokenException
 import net.bellsoft.bellsafehouse.exception.TokenNotFoundException
 import org.springframework.boot.test.context.SpringBootTest
@@ -31,9 +32,10 @@ class JwtSupportTest(
         Given("Refresh, Access Token 이 정상적으로 발급된 상태에서") {
             val userId = "testUserId"
             val uuid = UUID.randomUUID()
+            val userRole = UserRole.NORMAL
 
             val generatedRefreshToken = jwtSupport.generateRefreshToken(userId, uuid)
-            val generatedAccessToken = jwtSupport.generateAccessToken(generatedRefreshToken)
+            val generatedAccessToken = jwtSupport.generateAccessToken(generatedRefreshToken, userRole)
             val refreshTokenCookie = jwtSupport.createRefreshTokenCookie(generatedRefreshToken)
             val httpServletRequest = MockHttpServletRequest().apply {
                 setCookies(refreshTokenCookie)
@@ -45,7 +47,7 @@ class JwtSupportTest(
 
                 Then("InvalidTokenException 이 발생한다") {
                     shouldThrow<InvalidTokenException> {
-                        jwtSupport.getRefreshToken(randomString)
+                        jwtSupport.parseRefreshToken(randomString)
                     }
                 }
             }
@@ -53,14 +55,14 @@ class JwtSupportTest(
             When("accessToken 으로 refreshToken 정보를 파싱하려고 할 경우") {
                 Then("InvalidTokenException 이 발생한다") {
                     shouldThrow<InvalidTokenException> {
-                        jwtSupport.getRefreshToken(generatedAccessToken.value)
+                        jwtSupport.parseRefreshToken(generatedAccessToken.value)
                     }
                 }
             }
 
             When("refreshToken 으로 refreshToken 정보를 파싱하려고 할 경우") {
                 Then("정상적으로 파싱된다") {
-                    val refreshTokenDto = jwtSupport.getRefreshToken(generatedRefreshToken.value)
+                    val refreshTokenDto = jwtSupport.parseRefreshToken(generatedRefreshToken.value)
 
                     refreshTokenDto.userId shouldBe userId
                     refreshTokenDto.uuid shouldBe uuid
@@ -72,7 +74,7 @@ class JwtSupportTest(
 
                 Then("InvalidTokenException 이 발생한다") {
                     shouldThrow<InvalidTokenException> {
-                        jwtSupport.getAccessToken(randomString)
+                        jwtSupport.parseAccessToken(randomString)
                     }
                 }
             }
@@ -80,18 +82,18 @@ class JwtSupportTest(
             When("refreshToken 으로 accessToken 정보를 파싱하려고 할 경우") {
                 Then("InvalidTokenException 이 발생한다") {
                     shouldThrow<InvalidTokenException> {
-                        jwtSupport.getAccessToken(generatedRefreshToken.value)
+                        jwtSupport.parseAccessToken(generatedRefreshToken.value)
                     }
                 }
             }
 
             When("accessToken 으로 accessToken 정보를 파싱하려고 할 경우") {
                 Then("정상적으로 파싱된다") {
-                    val accessTokenDto = jwtSupport.getAccessToken(generatedAccessToken.value)
+                    val accessTokenDto = jwtSupport.parseAccessToken(generatedAccessToken.value)
 
                     accessTokenDto.userId shouldBe userId
                     accessTokenDto.uuid shouldBe uuid
-                    accessTokenDto.role shouldBe "TODO"
+                    accessTokenDto.role shouldBe userRole.name
                 }
             }
 

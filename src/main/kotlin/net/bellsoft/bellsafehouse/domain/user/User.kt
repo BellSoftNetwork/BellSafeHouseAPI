@@ -3,6 +3,7 @@ package net.bellsoft.bellsafehouse.domain.user
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
+import jakarta.persistence.Enumerated
 import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
@@ -14,6 +15,7 @@ import org.hibernate.annotations.Filter
 import org.hibernate.annotations.FilterDef
 import org.hibernate.annotations.SQLDelete
 import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import java.time.LocalDateTime
@@ -34,6 +36,10 @@ class User(
     email: String,
     nickname: String,
     marketingAgreed: Boolean = false,
+
+    @Enumerated
+    @Column(name = "role", nullable = false, updatable = true)
+    var role: UserRole = UserRole.NORMAL,
 ) : BaseTime(), UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -77,8 +83,8 @@ class User(
     }
 
     @ExcludeFromJacocoGeneratedReport
-    override fun getAuthorities(): MutableCollection<out GrantedAuthority>? {
-        return null
+    override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
+        return mutableListOf<GrantedAuthority>(SimpleGrantedAuthority(this.role.name))
     }
 
     override fun getPassword(): String {

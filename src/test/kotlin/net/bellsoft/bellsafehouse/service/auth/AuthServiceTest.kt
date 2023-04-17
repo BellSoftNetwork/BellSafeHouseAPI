@@ -6,6 +6,7 @@ import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import net.bellsoft.bellsafehouse.controller.v1.auth.dto.UserLoginRequest
 import net.bellsoft.bellsafehouse.controller.v1.auth.dto.UserRegistrationRequest
+import net.bellsoft.bellsafehouse.domain.user.UserRepository
 import net.bellsoft.bellsafehouse.exception.InvalidTokenException
 import net.bellsoft.bellsafehouse.exception.PasswordMismatchException
 import net.bellsoft.bellsafehouse.exception.UserNotFoundException
@@ -19,6 +20,7 @@ import org.springframework.test.context.ActiveProfiles
 @ActiveProfiles("test")
 internal class AuthServiceTest(
     private val authService: AuthService,
+    private val userRepository: UserRepository,
 ) : BehaviorSpec(
     {
         val fixture = baseFixture.new {
@@ -144,6 +146,23 @@ internal class AuthServiceTest(
 
                 Then("정상적으로 발급된다") {
                     shouldNotThrowAny {
+                        authService.reissueAccessToken(loginUserDto.refreshTokenCookie.value)
+                    }
+                }
+            }
+
+            When("삭제된 유저의 RefreshToken 으로 AccessToken 재발급 요청시") {
+                val loginUserDto = authService.login(
+                    fixture {
+                        property(UserLoginRequest::userId) { userRegistrationRequest.userId }
+                        property(UserLoginRequest::password) { userRegistrationRequest.password }
+                    },
+                )
+
+                userRepository.delete(loginUserDto.user)
+
+                Then("재발급에 실패한다") {
+                    shouldThrow<InvalidTokenException> {
                         authService.reissueAccessToken(loginUserDto.refreshTokenCookie.value)
                     }
                 }

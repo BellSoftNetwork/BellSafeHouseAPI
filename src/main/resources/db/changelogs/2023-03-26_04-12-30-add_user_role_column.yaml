@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1679814750935-1
+      author: Tetrahedrite
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addColumn:
+            columns:
+              - column:
+                  name: role
+                  type: INT
+            tableName: user
+        - addNotNullConstraint:
+            columnDataType: INT
+            columnName: role
+            defaultNullValue: '0'
+            tableName: user
+

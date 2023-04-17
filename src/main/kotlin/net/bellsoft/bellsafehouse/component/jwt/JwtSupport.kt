@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServletRequest
 import mu.KLogging
 import net.bellsoft.bellsafehouse.component.jwt.dto.AccessTokenDto
 import net.bellsoft.bellsafehouse.component.jwt.dto.RefreshTokenDto
+import net.bellsoft.bellsafehouse.domain.user.UserRole
 import net.bellsoft.bellsafehouse.exception.InvalidAuthHeaderException
 import net.bellsoft.bellsafehouse.exception.InvalidTokenException
 import net.bellsoft.bellsafehouse.exception.TokenNotFoundException
@@ -51,14 +52,14 @@ class JwtSupport(
         return BearerToken(builder.compact())
     }
 
-    fun generateAccessToken(refreshToken: BearerToken): BearerToken {
+    fun generateAccessToken(refreshToken: BearerToken, role: UserRole): BearerToken {
         val refreshTokenDto = RefreshTokenDto.ofJwsClaims(parseClaimsJws(refreshToken.value))
 
         val builder = Jwts.builder()
             .setSubject(JwtTokenType.ACCESS.name)
             .claim(AccessTokenClaim.USER_ID.name, refreshTokenDto.userId)
             .claim(AccessTokenClaim.UUID.name, refreshTokenDto.uuid)
-            .claim(AccessTokenClaim.ROLE.name, "TODO") // TODO
+            .claim(AccessTokenClaim.ROLE.name, role.name)
             .setIssuedAt(Date.from(getCurrentInstant()))
             .setExpiration(Date.from(getCurrentInstant().plus(accessTokenExpirationMinute, ChronoUnit.MINUTES)))
             .signWith(jwtSecretKey)
@@ -66,11 +67,11 @@ class JwtSupport(
         return BearerToken(builder.compact())
     }
 
-    fun getRefreshToken(refreshToken: String): RefreshTokenDto {
+    fun parseRefreshToken(refreshToken: String): RefreshTokenDto {
         return RefreshTokenDto.ofJwsClaims(parseClaimsJws(refreshToken))
     }
 
-    fun getAccessToken(accessToken: String): AccessTokenDto {
+    fun parseAccessToken(accessToken: String): AccessTokenDto {
         return AccessTokenDto.ofJwsClaims(parseClaimsJws(accessToken))
     }
 
