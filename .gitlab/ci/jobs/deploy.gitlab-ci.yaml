@@ -20,8 +20,8 @@ deploy_production:
     - .save_kubernetes_resources_to_artifacts
   variables:
     APPLICATION_URL: ${KUBE_INGRESS_BASE_DOMAIN}
-    APPLICATION_NAMESPACE: ${KUBE_PRODUCTION_NAMESPACE}
-    CERT_MANAGER_CLUSTER_ISSUER: "letsencrypt-prod"
+    APPLICATION_TLS_SECRET_NAME: ${KUBE_INGRESS_TLS_SECRET_NAME}
+    APPLICATION_NAMESPACE: ${KUBE_NAMESPACE}
     DEPLOY_ENVIRONMENT: "production"
   environment:
     name: production

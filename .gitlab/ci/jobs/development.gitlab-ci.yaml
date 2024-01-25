@@ -19,7 +19,8 @@ deploy_development:
     - .kubernetes_apply
     - .save_kubernetes_resources_to_artifacts
   variables:
-    APPLICATION_URL: development.${KUBE_INGRESS_BASE_DOMAIN}
+    APPLICATION_URL: ${KUBE_INGRESS_BASE_DOMAIN}
+    APPLICATION_TLS_SECRET_NAME: ${KUBE_INGRESS_TLS_SECRET_NAME}
     APPLICATION_NAMESPACE: ${KUBE_NAMESPACE}
     DEPLOY_ENVIRONMENT: "development"
   environment:
