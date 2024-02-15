@@ -47,3 +47,4 @@ spec:
                 name: ${APPLICATION_API_SERVICE_NAME}
                 port:
                   number: 8080
+  ingressClassName: public
